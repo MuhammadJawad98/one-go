@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "637391228731",
+    "project_id": "one-go-ecommerce",
+    "storage_bucket": "one-go-ecommerce.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637391228731:android:de6fbff9595fb9b66d311e",
+        "android_client_info": {
+          "package_name": "com.carwash.mobileapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqQoFQOzwWnOgEeiE-vGrpZvoVkNUdb7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637391228731:android:06735415b5589f276d311e",
+        "android_client_info": {
+          "package_name": "com.onego.mobileapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqQoFQOzwWnOgEeiE-vGrpZvoVkNUdb7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
