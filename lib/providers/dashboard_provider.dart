@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:car_wash_app/models/attachement_model.dart';
+import 'package:car_wash_app/models/car_model.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import '../models/car_detail_model.dart';
+import '../models/category_model.dart';
 import '../utils/application_shared_instance.dart';
 import '../models/selection_object.dart';
 import '../utils/helper_functions.dart';
@@ -8,21 +13,28 @@ import '../utils/app_sharedpref.dart';
 import '../services/api_manager.dart';
 import '../utils/api_endpoint.dart';
 import '../models/user_model.dart';
-import '../utils/app_assets.dart';
 import '../utils/app_alerts.dart';
 import '../utils/print_log.dart';
 
 class DashboardProvider extends ChangeNotifier {
   String appVersion = '';
   String buildNumber = '';
+  bool isProfileUpdating = false;
+  bool isCarDetailLoading = false;
+  bool hasMore = true;
+  bool isLoading = false;
   UserModel userModel = UserModel();
-
-  List<SelectionObject> categories = [
-    SelectionObject(id: '1', title: 'All', isSelected: true),
-    SelectionObject(id: '2', title: 'New Cars'),
-    SelectionObject(id: '3', title: 'Recondition Cars'),
-  ];
-
+  Attachment attachment = Attachment();
+  CarDetailsModel carDetailsModel = CarDetailsModel();
+  List<CarsModel> carsList = [];
+  List<CarsModel> searchedCarsList = [];
+  int currentPage = 1;
+  int totalCars = 0;
+  int totalSearchedCars = 0;
+  List<Category> categories = [];
+  List<SelectionObject> cities = [];
+  List<SelectionObject> makes = [];
+  List<SelectionObject> models = [];
   List<SelectionObject> topCarBrandsInSaudi = [
     SelectionObject(
       id: '1',
@@ -30,6 +42,46 @@ class DashboardProvider extends ChangeNotifier {
       titleAr: 'تويوتا',
       image:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carlogo.svg/1200px-Toyota_carlogo.svg.png',
+      isSelected: false,
+    ),
+    SelectionObject(
+      id: '5',
+      title: 'Mitsubishi',
+      titleAr: 'ميتسوبيشي',
+      image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Mitsubishi_logo.svg/1200px-Mitsubishi_logo.svg.png',
+      isSelected: false,
+    ),
+    SelectionObject(
+      id: '6',
+      title: 'Mercedes-Benz',
+      titleAr: 'مرسيدس بنز',
+      image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/1200px-Mercedes-Logo.svg.png',
+      isSelected: false,
+    ),
+    SelectionObject(
+      id: '7',
+      title: 'BMW',
+      titleAr: 'بي ام دبليو',
+      image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
+      isSelected: false,
+    ),
+    SelectionObject(
+      id: '9',
+      title: 'Ford',
+      titleAr: 'فورد',
+      image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/1200px-Ford_logo_flat.svg.png',
+      isSelected: false,
+    ),
+    SelectionObject(
+      id: '15',
+      title: 'Volkswagen',
+      titleAr: 'فولكس واجن',
+      image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/1200px-Volkswagen_logo_2019.svg.png',
       isSelected: false,
     ),
     SelectionObject(
@@ -57,43 +109,11 @@ class DashboardProvider extends ChangeNotifier {
       isSelected: false,
     ),
     SelectionObject(
-      id: '5',
-      title: 'Mitsubishi',
-      titleAr: 'ميتسوبيشي',
-      image:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Mitsubishi_logo.svg/1200px-Mitsubishi_logo.svg.png',
-      isSelected: false,
-    ),
-    SelectionObject(
-      id: '6',
-      title: 'Mercedes-Benz',
-      titleAr: 'مرسيدس بنز',
-      image:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/1200px-Mercedes-Logo.svg.png',
-      isSelected: false,
-    ),
-    SelectionObject(
-      id: '7',
-      title: 'BMW',
-      titleAr: 'بي ام دبليو',
-      image:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
-      isSelected: false,
-    ),
-    SelectionObject(
       id: '8',
       title: 'Lexus',
       titleAr: 'لكزس',
       image:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lexus_Logo_2021.png/800px-Lexus_Logo_2021.png',
-      isSelected: false,
-    ),
-    SelectionObject(
-      id: '9',
-      title: 'Ford',
-      titleAr: 'فورد',
-      image:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/1200px-Ford_logo_flat.svg.png',
       isSelected: false,
     ),
     SelectionObject(
@@ -136,16 +156,7 @@ class DashboardProvider extends ChangeNotifier {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi_logo_detail.svg/1200px-Audi_logo_detail.svg.png',
       isSelected: false,
     ),
-    SelectionObject(
-      id: '15',
-      title: 'Volkswagen',
-      titleAr: 'فولكس واجن',
-      image:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/1200px-Volkswagen_logo_2019.svg.png',
-      isSelected: false,
-    ),
   ];
-
   List<SelectionObject> genders = [
     SelectionObject(id: '1', title: 'Male'),
     SelectionObject(id: '2', title: 'Female'),
@@ -175,9 +186,9 @@ class DashboardProvider extends ChangeNotifier {
   Future<void> initApiCalls(BuildContext context) async {
     Future.wait([
       fetchProfile(context),
-      fetchCategories(context),
-      fetchCities(context),
+      fetchCars(context,fromHomeScreen: true),
     ]);
+    notifyListeners();
   }
 
   ///fetch profile
@@ -204,12 +215,29 @@ class DashboardProvider extends ChangeNotifier {
     }
   }
 
-  ///fetch Cities
-  Future<void> fetchCities(BuildContext context) async {
+  ///update profile
+  Future<void> updateProfile(BuildContext context, UserModel obj) async {
     try {
-      final response = await ApiManager.get(ApiEndpoint.getCities);
-      PrintLogs.printLog("fetchCities: $response");
+      var body = {
+        "mobile": obj.mobile,
+        "name": obj.name,
+        "email": obj.email,
+        "attachmentId": obj.attachment?.id != ""
+            ? int.parse(obj.attachment!.id)
+            : "",
+      };
+      updateProfileLoader(true);
+      final response = await ApiManager.update(ApiEndpoint.updateProfile, body);
+      updateProfileLoader(false);
+      PrintLogs.printLog("fetchProfile: $response");
       if (response['status'] == true) {
+        // if (response['data'] is Map) {
+        //   userModel = UserModel.fromJson(response['data']);
+        //   HelperFunctions.saveInPreference(
+        //     AppSharedPref.userData,
+        //     jsonEncode(userModel),
+        //   );
+        // }
       } else {
         HelperFunctions.handleApiMessages(response);
       }
@@ -218,15 +246,273 @@ class DashboardProvider extends ChangeNotifier {
         'An error occurred: ${e.toString()}',
         statusCode: 1,
       );
+      updateProfileLoader(false);
     }
   }
 
-  ///fetch Cities
-  Future<void> fetchCategories(BuildContext context) async {
+  Future<bool> uploadAttachment(BuildContext context, File file) async {
+    try {
+      final response = await ApiManager.uploadFile(
+        ApiEndpoint.attachmentsUpload,
+        file,
+        fieldName: "file",
+      );
+
+      PrintLogs.printLog("uploadAttachment response: $response");
+      attachment = Attachment();
+
+      if (response['status'] == true) {
+        if (response['data']['attachment'] is Map) {
+          attachment = Attachment.fromJson(response['data']['attachment']);
+        }
+        return true;
+        // AppAlerts.showSnackBar("Attachment uploaded successfully!");
+      } else {
+        HelperFunctions.handleApiMessages(response);
+      }
+    } catch (e) {
+      AppAlerts.showSnackBar('Upload failed: ${e.toString()}', statusCode: 1);
+    }
+    return false;
+  }
+
+  /// Initialize all common data
+  Future<void> initializeCommonData({bool showLoading = true}) async {
+    try {
+      // Execute all API calls concurrently
+      await Future.wait([
+        _fetchCities(),
+        _fetchMakes(),
+        _fetchCategories(),
+      ], eagerError: true);
+
+    } catch (e) {
+      PrintLogs.printLog("initializeCommonData error: $e");
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  /// Fetch cities
+  Future<void> _fetchCities() async {
+    try {
+      final response = await ApiManager.get(ApiEndpoint.getCities);
+      PrintLogs.printLog("fetchCities: $response");
+
+      if (response['status'] == true) {
+        if (response['data'] is List) {
+          cities.clear();
+          for (var item in response['data']) {
+            cities.add(SelectionObject(id: item['id']?.toString() ?? '', title:  item['name']?.toString() ?? '', value:  item['slug']?.toString() ?? ''));
+          }
+        }
+      }
+    } catch (e) {
+      PrintLogs.printLog("fetchCities error: $e");
+    }
+  }
+
+  /// Fetch makes
+  Future<void> _fetchMakes() async {
+    try {
+      final response = await ApiManager.get(ApiEndpoint.carsMakes); // Fixed endpoint
+      PrintLogs.printLog("fetchMakes: $response");
+
+      if (response['status'] == true) {
+        if (response['data'] is List) {
+          makes.clear();
+          for (var item in response['data']) {
+            makes.add(SelectionObject(id: item['id']?.toString() ?? '', title:  item['name']?.toString() ?? '', value:  item['slug']?.toString() ?? '', isActive: item['isActive'] == true));
+          }
+        }
+      }
+    } catch (e) {
+      PrintLogs.printLog("fetchMakes error: $e");
+    }
+  }
+
+  ///fetch models
+  Future<void> fetchModels(BuildContext context, String makeId) async {
+    try {
+      final response = await ApiManager.get("${ApiEndpoint.carsMakes}/$makeId/models"); // Fixed endpoint
+      PrintLogs.printLog("fetchModels: $response");
+
+      if (response['status'] == true) {
+        if (response['data'] is List) {
+          models.clear();
+          for (var item in response['data']) {
+            models.add(SelectionObject(id: item['id']?.toString() ?? '', title:  item['name']?.toString() ?? '', value:  item['slug']?.toString() ?? '', isActive: item['isActive'] == true));
+          }
+        }
+      }
+    } catch (e) {
+      PrintLogs.printLog("fetchMakes error: $e");
+    }
+  }
+
+  /// Fetch categories
+  Future<void> _fetchCategories() async {
     try {
       final response = await ApiManager.get(ApiEndpoint.getCategories);
       PrintLogs.printLog("fetchCategories: $response");
+
       if (response['status'] == true) {
+        if (response['data'] is List) {
+          categories.clear();
+          for (var item in response['data']) {
+            categories.add(Category.fromJson(item));
+          }
+          if (categories.isNotEmpty) {
+            categories[0].isSelected = true;
+          }
+        }
+      } else {
+        HelperFunctions.handleApiMessages(response);
+        throw Exception('Failed to fetch categories');
+      }
+    } catch (e) {
+      PrintLogs.printLog("fetchCategories error: $e");
+      rethrow;
+    }
+  }
+
+  /// Individual refresh methods if needed
+  Future<void> refreshCities() async => await _fetchCities();
+  Future<void> refreshMakes() async => await _fetchMakes();
+  Future<void> refreshCategories() async => await _fetchCategories();
+
+  /// Clear all data
+  void clearData() {
+    categories.clear();
+    cities.clear();
+    makes.clear();
+    notifyListeners();
+  }
+
+
+  Future<void> fetchCars(
+    BuildContext context, {
+    int limit = 20,
+    String? sortBy,
+    String? sortOrder,
+    String? conditionType,
+    String? regionalSpecs,
+    String? optionalLevel,
+    String? bodyType,
+    String? transmission,
+    String? driveType,
+    String? fuelType,
+    String? cylinders,
+    String? overallCondition,
+    String? accidentHistory,
+    String? airBagsCondition,
+    String? chassisCondition,
+    String? engineCondition,
+    String? gearBoxCondition,
+    String? roofType,
+    String? color,
+    String? makeId,
+    String? makeSlug,
+    String? modelId,
+    String? modelSlug,
+    String? cityId,
+    String? citySlug,
+    String? minPrice,
+    String? maxPrice,
+    String? minMileage,
+    String? maxMileage,
+    String? minYear,
+    String? maxYear,
+    String? keywords,
+    String? keyword,
+    bool? isFeatured,
+    bool reset = false,
+    bool fromHomeScreen = false,
+  }) async {
+    if (isLoading) return;
+    isLoading = true;
+
+    try {
+      if (reset) {
+        currentPage = 1;
+        hasMore = true;
+      }
+      if(fromHomeScreen){
+        carsList.clear();
+      }
+      searchedCarsList.clear();
+
+      final uri = Uri.parse(ApiEndpoint.carsSearch).replace(
+        queryParameters: {
+          'page': currentPage.toString(),
+          'limit': limit.toString(),
+          if (sortBy != null && sortBy.isNotEmpty) 'sortBy': sortBy,
+          if (sortOrder != null && sortOrder.isNotEmpty) 'sortOrder': sortOrder,
+          if (conditionType != null && conditionType.isNotEmpty) 'conditionType': conditionType,
+          if (regionalSpecs != null && regionalSpecs.isNotEmpty) 'regionalSpecs': regionalSpecs,
+          if (optionalLevel != null && optionalLevel.isNotEmpty) 'optionalLevel': optionalLevel,
+          if (bodyType != null && bodyType.isNotEmpty) 'bodyType': bodyType,
+          if (transmission != null && transmission.isNotEmpty) 'transmission': transmission,
+          if (driveType != null && driveType.isNotEmpty) 'driveType': driveType,
+          if (fuelType != null && fuelType.isNotEmpty) 'fuelType': fuelType,
+          if (cylinders != null && cylinders.isNotEmpty) 'cylinders': cylinders,
+          if (overallCondition != null && overallCondition.isNotEmpty) 'overallCondition': overallCondition,
+          if (accidentHistory != null && accidentHistory.isNotEmpty) 'accidentHistory': accidentHistory,
+          if (airBagsCondition != null && airBagsCondition.isNotEmpty) 'airBagsCondition': airBagsCondition,
+          if (chassisCondition != null && chassisCondition.isNotEmpty) 'chassisCondition': chassisCondition,
+          if (engineCondition != null && engineCondition.isNotEmpty) 'engineCondition': engineCondition,
+          if (gearBoxCondition != null && gearBoxCondition.isNotEmpty) 'gearBoxCondition': gearBoxCondition,
+          if (roofType != null && roofType.isNotEmpty) 'roofType': roofType,
+          if (color != null && color.isNotEmpty) 'color': color,
+          if (makeId != null && makeId.isNotEmpty) 'makeId': makeId,
+          if (makeSlug != null && makeSlug.isNotEmpty) 'makeSlug': makeSlug,
+          if (modelId != null && modelId.isNotEmpty) 'modelId': modelId,
+          if (modelSlug != null && modelSlug.isNotEmpty) 'modelSlug': modelSlug,
+          if (cityId != null && cityId.isNotEmpty) 'cityId': cityId,
+          if (citySlug != null && citySlug.isNotEmpty) 'citySlug': citySlug,
+          if (minPrice != null && minPrice.isNotEmpty) 'minPrice': minPrice,
+          if (maxPrice != null && maxPrice.isNotEmpty) 'maxPrice': maxPrice,
+          if (minMileage != null && minMileage.isNotEmpty) 'minMileage': minMileage,
+          if (maxMileage != null && maxMileage.isNotEmpty) 'maxMileage': maxMileage,
+          if (minYear != null && minYear.isNotEmpty) 'minYear': minYear,
+          if (maxYear != null && maxYear.isNotEmpty) 'maxYear': maxYear,
+          if (keywords != null && keywords.isNotEmpty) 'keywords': keywords,
+          if (keyword != null && keyword.isNotEmpty) 'keyword': keyword,
+          if (isFeatured != null) 'isFeatured': isFeatured.toString(),
+        },
+      );
+
+      final response = await ApiManager.get(uri.toString());
+
+      if (response['status'] == true &&
+          response['data'] is Map &&
+          response['data']['data'] is List) {
+        final List<dynamic> carList = response['data']['data'] ?? [];
+        final bool next = response['data']['hasNext'] ?? false;
+
+        if (carList.isNotEmpty) {
+          if(!fromHomeScreen){
+            searchedCarsList.addAll(carList.map((e) => CarsModel.fromJson(e)).toList());
+            PrintLogs.printLog("searchedCarsList: ${searchedCarsList.length}");
+            if(response['data']['total'] is int){
+              totalSearchedCars = response['data']['total'];
+            }
+          }else{
+            carsList.addAll(carList.map((e) => CarsModel.fromJson(e)).toList());
+            if(response['data']['total'] is int){
+              totalCars = response['data']['total'];
+            }
+          }
+        }else{
+         if(!fromHomeScreen) totalSearchedCars = 0;
+        }
+
+
+        if (next) {
+          currentPage++; // ✅ only increment if API says more pages
+        } else {
+          hasMore = false;
+        }
       } else {
         HelperFunctions.handleApiMessages(response);
       }
@@ -235,6 +521,65 @@ class DashboardProvider extends ChangeNotifier {
         'An error occurred: ${e.toString()}',
         statusCode: 1,
       );
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void onCategorySelection(int index) {
+    for (int i = 0; i < categories.length; i++) {
+      if (i == index) {
+        categories[i].isSelected = true;
+      } else {
+        categories[i].isSelected = false;
+      }
+    }
+    notifyListeners();
+  }
+
+  void uploadUserPic(
+    BuildContext context,
+    File file, {
+    bool fromProfile = false,
+  }) async {
+    updateProfileLoader(true);
+    var result = await uploadAttachment(context, file);
+    PrintLogs.printLog("upload user pic: $result");
+    updateProfileLoader(false);
+    if (result && fromProfile) {
+      var obj = userModel;
+      obj.attachment = attachment;
+      await updateProfile(context, obj);
+    }
+  }
+
+  void updateProfileLoader(bool val) {
+    isProfileUpdating = val;
+    notifyListeners();
+  }
+
+  void updateCarDetailLoader(bool val){
+    isCarDetailLoading = val;
+    notifyListeners();
+  }
+
+  void fetchCarDetails(BuildContext context, CarsModel obj) async{
+    carDetailsModel = CarDetailsModel();
+     updateProfileLoader(true);
+    try{
+      final response = await ApiManager.get('${ApiEndpoint.cars}/${obj.id}');
+      PrintLogs.printLog("fetchCarDetails response: $response");
+      if (response['status'] == true && response['data'] is Map) {
+        carDetailsModel = CarDetailsModel.fromJson(response['data']);
+      }else{
+        carDetailsModel = CarDetailsModel();
+      }
+    }catch(e){
+      PrintLogs.printLog('Exception fetchCarDetails : $e');
+      carDetailsModel = CarDetailsModel();
+    }finally{
+      updateProfileLoader(true);
     }
   }
 }

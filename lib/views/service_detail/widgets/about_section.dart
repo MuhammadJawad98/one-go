@@ -1,82 +1,65 @@
+import 'package:car_wash_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/selection_object.dart';
 import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_text.dart';
 
 class AboutSection extends StatelessWidget {
-  // final List<SelectionObject> sizes;
-  final int selectedSize;
-  final ValueChanged<int> onSizeChanged;
-
-  const AboutSection({
-    super.key,
-    // required this.sizes,
-    required this.selectedSize,
-    required this.onSizeChanged,
-  });
+  const AboutSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Consumer<DashboardProvider>(
+      builder: (context, provider, child) {
+        return ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            customItem("Make", provider.carDetailsModel.makeName),
+            customItem("Model", provider.carDetailsModel.modelName),
+            customItem("Year", provider.carDetailsModel.year),
+            customItem("Variant", provider.carDetailsModel.variant),
+            customItem("Color", provider.carDetailsModel.color),
+            customItem("Condition", provider.carDetailsModel.conditionType),
+            customItem("Mileage", provider.carDetailsModel.mileage),
+            customItem("Fuel Type", provider.carDetailsModel.fuelType),
+            customItem("Transmission", provider.carDetailsModel.transmission),
+            customItem("Drive Type", provider.carDetailsModel.driveType),
+            customItem("Body Type", provider.carDetailsModel.bodyType),
+            customItem("Engine Size", provider.carDetailsModel.engineSize),
+            customItem("Cylinders", provider.carDetailsModel.cylinders),
+            customItem("Seats", provider.carDetailsModel.noOfSeats),
+            customItem(
+              "Regional Specs",
+              provider.carDetailsModel.regionalSpecs,
+            ),
+            customItem("Option Level", provider.carDetailsModel.optionLevel),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget customItem(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CustomText(
-            text: 'About',
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+          Expanded(
+            flex: 3,
+            child: CustomText(
+              text: '$title:',
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: Colors.black54,
+            ),
           ),
-          const SizedBox(height: 12),
-          const CustomText(
-            text:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Read more',
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: AppColors.lightGreyTextColor,
+          Expanded(
+            flex: 5,
+            child: CustomText(text: value, fontSize: 14, color: Colors.black87),
           ),
-          const SizedBox(height: 24),
-          // const CustomText(
-          //   text: 'Select Size',
-          //   fontSize: 14,
-          //   fontWeight: FontWeight.w500,
-          // ),
-          // const SizedBox(height: 12),
-          // SizedBox(
-          //   height: 70,
-          //   child: ListView.separated(
-          //     scrollDirection: Axis.horizontal,
-          //     itemCount: sizes.length,
-          //     itemBuilder: (context, index) {
-          //       final selected = selectedSize == index;
-          //       return GestureDetector(
-          //         onTap: () => onSizeChanged(index),
-          //         child: Container(
-          //           width: 60,
-          //           height: 60,
-          //           decoration: BoxDecoration(
-          //             shape: BoxShape.circle,
-          //             color: selected
-          //                 ? AppColors.primaryColor
-          //                 : AppColors.greyColor.withAlpha(50),
-          //           ),
-          //           child: Center(
-          //             child: CustomText(
-          //               text: sizes[index].title,
-          //               fontSize: 18,
-          //               fontWeight: FontWeight.w600,
-          //               color: selected
-          //                   ? AppColors.whiteColor
-          //                   : AppColors.blackColor,
-          //             ),
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //     separatorBuilder: (_, __) => const SizedBox(width: 6),
-          //   ),
-          // ),
-          // const SizedBox(height: 100),
         ],
       ),
     );

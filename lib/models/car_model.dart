@@ -1,148 +1,137 @@
+import 'package:car_wash_app/utils/api_endpoint.dart';
+
 class CarsModel {
   String id = '';
-  String title = '';
-  String image = '';
-  double price = 0;
-  bool isFavorite = false;
+  String year = '';
+  String mileage = '';
+  String makeName = '';
+  String makeSlug = '';
+  String modelName = '';
+  String modelSlug = '';
+  String variant = '';
+  String color = '';
+  String cityName = '';
+  String citySlug = '';
+  String conditionType = '';
+  String listingPrice = '';
+  String publishedOn = '';
+  String viewCount = '';
+  String mainImageUrl = '';
+  String bodyType = '';
+  String transmission = '';
+  String fuelType = '';
+  String engineSize = '';
+  String noOfSeats = '';
   bool isFeatured = false;
-  int quantity = 0;
-  String? selectedSize;
-  String? selectedColor;
-  DateTime? addedToCartAt;
-  List<String>? availableSizes;
-  List<String>? availableColors;
-  String? description;
-  double? discount;
-  String? category;
-  double? averageRating;
-  int? reviewCount;
-  String? brand;
 
-  CarsModel({
-    required this.id,
-    required this.title,
-    required this.image,
-    required this.price,
-    this.isFavorite = false,
-    this.isFeatured = false,
-    this.quantity = 1,
-    this.selectedSize,
-    this.selectedColor,
-    this.addedToCartAt,
-    this.availableSizes,
-    this.availableColors,
-    this.description,
-    this.discount,
-    this.category,
-    this.averageRating,
-    this.reviewCount,
-    this.brand,
-  });
+  CarsModel();
 
-  // CopyWith method for creating modified copies
-  CarsModel copyWith({
-    String? id,
-    String? title,
-    String? image,
-    double? price,
-    bool? isFavorite,
-    int? quantity,
-    String? selectedSize,
-    String? selectedColor,
-    DateTime? addedToCartAt,
-    List<String>? availableSizes,
-    List<String>? availableColors,
-    String? description,
-    double? discount,
-    String? category,
-    double? averageRating,
-    int? reviewCount,
-    String? brand,
-  }) {
-    return CarsModel(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      image: image ?? this.image,
-      price: price ?? this.price,
-      isFavorite: isFavorite ?? this.isFavorite,
-      quantity: quantity ?? this.quantity,
-      selectedSize: selectedSize ?? this.selectedSize,
-      selectedColor: selectedColor ?? this.selectedColor,
-      addedToCartAt: addedToCartAt ?? this.addedToCartAt,
-      availableSizes: availableSizes ?? this.availableSizes,
-      availableColors: availableColors ?? this.availableColors,
-      description: description ?? this.description,
-      discount: discount ?? this.discount,
-      category: category ?? this.category,
-      averageRating: averageRating ?? this.averageRating,
-      reviewCount: reviewCount ?? this.reviewCount,
-      brand: brand ?? this.brand,
-    );
+  /// From JSON
+  CarsModel.fromJson(Map<String, dynamic> json) {
+    id = json['id']?.toString() ?? '';
+    year = json['year']?.toString() ?? '';
+    mileage = json['mileage']?.toString() ?? '';
+    makeName = json['makeName']?.toString() ?? '';
+    makeSlug = json['makeSlug']?.toString() ?? '';
+    modelName = json['modelName']?.toString() ?? '';
+    modelSlug = json['modelSlug']?.toString() ?? '';
+    variant = json['variant']?.toString() ?? '';
+    color = json['color']?.toString() ?? '';
+    cityName = json['cityName']?.toString() ?? '';
+    citySlug = json['citySlug']?.toString() ?? '';
+    conditionType = json['conditionType']?.toString() ?? '';
+    listingPrice = json['listingPrice']?.toString() ?? '';
+    publishedOn = json['publishedOn']?.toString() ?? '';
+    viewCount = json['viewCount']?.toString() ?? '';
+    mainImageUrl = json['mainImageUrl']?.toString() ?? '';
+    if(mainImageUrl.isNotEmpty){
+      mainImageUrl = "${ApiEndpoint.imageBaseUrl}$mainImageUrl";
+    }
+    bodyType = json['bodyType']?.toString() ?? '';
+    transmission = json['transmission']?.toString() ?? '';
+    fuelType = json['fuelType']?.toString() ?? '';
+    engineSize = json['engineSize']?.toString() ?? '';
+    noOfSeats = json['noOfSeats']?.toString() ?? '';
+    if (json['isFeatured'] is bool) {
+      isFeatured = json['isFeatured'];
+    }
   }
 
-  // JSON serialization
+  /// To JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': title,
-      'image': image,
-      'price': price,
-      'isFavorite': isFavorite,
-      'quantity': quantity,
-      'selectedSize': selectedSize,
-      'selectedColor': selectedColor,
-      'addedToCartAt': addedToCartAt?.toIso8601String(),
-      'availableSizes': availableSizes,
-      'availableColors': availableColors,
-      'description': description,
-      'discount': discount,
-      'category': category,
-      'averageRating': averageRating,
-      'reviewCount': reviewCount,
-      'brand': brand,
+      'year': year,
+      'mileage': mileage,
+      'makeName': makeName,
+      'makeSlug': makeSlug,
+      'modelName': modelName,
+      'modelSlug': modelSlug,
+      'variant': variant,
+      'color': color,
+      'cityName': cityName,
+      'citySlug': citySlug,
+      'conditionType': conditionType,
+      'listingPrice': listingPrice,
+      'isFeatured': isFeatured,
+      'publishedOn': publishedOn,
+      'viewCount': viewCount,
+      'mainImageUrl': mainImageUrl,
+      'bodyType': bodyType,
+      'transmission': transmission,
+      'fuelType': fuelType,
+      'engineSize': engineSize,
+      'noOfSeats': noOfSeats,
     };
   }
 
-  // JSON deserialization
-  factory CarsModel.fromJson(Map<String, dynamic> json) {
-    return CarsModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      image: json['image'] ?? '',
-      price: json['price']?.toDouble() ?? 0.0,
-      isFavorite: json['isFavorite'] ?? false,
-      quantity: json['quantity'] ?? 1,
-      selectedSize: json['selectedSize'],
-      selectedColor: json['selectedColor'],
-      addedToCartAt: json['addedToCartAt'] != null
-          ? DateTime.parse(json['addedToCartAt'])
-          : null,
-      availableSizes: json['availableSizes'] != null
-          ? List<String>.from(json['availableSizes'])
-          : null,
-      availableColors: json['availableColors'] != null
-          ? List<String>.from(json['availableColors'])
-          : null,
-      description: json['description'],
-      discount: json['discount']?.toDouble(),
-      category: json['category'],
-      averageRating: json['averageRating']?.toDouble(),
-      reviewCount: json['reviewCount'],
-      brand: json['brand'],
-    );
+  /// CopyWith
+  CarsModel copyWith({
+    String? id,
+    String? year,
+    String? mileage,
+    String? makeName,
+    String? makeSlug,
+    String? modelName,
+    String? modelSlug,
+    String? variant,
+    String? color,
+    String? cityName,
+    String? citySlug,
+    String? conditionType,
+    String? listingPrice,
+    String? publishedOn,
+    String? viewCount,
+    String? mainImageUrl,
+    String? bodyType,
+    String? transmission,
+    String? fuelType,
+    String? engineSize,
+    String? noOfSeats,
+    bool? isFeatured,
+  }) {
+    return CarsModel()
+      ..id = id ?? this.id
+      ..year = year ?? this.year
+      ..mileage = mileage ?? this.mileage
+      ..makeName = makeName ?? this.makeName
+      ..makeSlug = makeSlug ?? this.makeSlug
+      ..modelName = modelName ?? this.modelName
+      ..modelSlug = modelSlug ?? this.modelSlug
+      ..variant = variant ?? this.variant
+      ..color = color ?? this.color
+      ..cityName = cityName ?? this.cityName
+      ..citySlug = citySlug ?? this.citySlug
+      ..conditionType = conditionType ?? this.conditionType
+      ..listingPrice = listingPrice ?? this.listingPrice
+      ..publishedOn = publishedOn ?? this.publishedOn
+      ..viewCount = viewCount ?? this.viewCount
+      ..mainImageUrl = mainImageUrl ?? this.mainImageUrl
+      ..bodyType = bodyType ?? this.bodyType
+      ..transmission = transmission ?? this.transmission
+      ..fuelType = fuelType ?? this.fuelType
+      ..engineSize = engineSize ?? this.engineSize
+      ..noOfSeats = noOfSeats ?? this.noOfSeats
+      ..isFeatured = isFeatured ?? this.isFeatured;
   }
-
-  // Get discounted price
-  double get discountedPrice {
-    return discount != null ? price - (price * discount! / 100) : price;
-  }
-
-  // Check if product is on discount
-  bool get hasDiscount => discount != null && discount! > 0;
-
-  // Formatted price
-  String get formattedPrice => '\$${price.toStringAsFixed(2)}';
-
-  // Formatted discounted price
-  String get formattedDiscountedPrice => '\$${discountedPrice.toStringAsFixed(2)}';
 }

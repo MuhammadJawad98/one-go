@@ -18,85 +18,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  List<CarsModel> favoriteCars = [
-    CarsModel(
-      id: '1',
-      title: '2023 Porsche 911 Turbo S',
-      image:
-          'https://cdn.porsche.com/usa/models/911/911-turbo-s/992/gallery/911-turbo-s-992-gallery-01.jpg',
-      price: 207000,
-      brand: 'Porsche',
-      category: 'Sports Car',
-      description:
-          '640hp twin-turbo flat-6 engine, 0-60mph in 2.6 seconds with rear-axle steering',
-      averageRating: 4.9,
-      reviewCount: 342,
-      availableColors: ['GT Silver Metallic', 'Carmine Red', 'Jet Black'],
-      discount: 5,
-    ),
-    CarsModel(
-      id: '2',
-      title: '2023 Mercedes-Benz S-Class S 580',
-      image:
-          'https://www.mbusa.com/content/dam/mb-nafta/us/myco/my23/s-class/sedan/overview/hero/2023-S-CLASS-SEDAN-HERO-DR.jpg',
-      price: 118000,
-      brand: 'Mercedes-Benz',
-      category: 'Luxury Sedan',
-      description:
-          '496hp V8 with rear-axle steering, MBUX hyperscreen and executive rear seating',
-      averageRating: 4.8,
-      reviewCount: 287,
-      availableColors: ['Obsidian Black', 'Selenite Grey', 'Rubellite Red'],
-    ),
-    CarsModel(
-      id: '3',
-      title: '2023 Land Rover Range Rover SV',
-      image:
-          'https://www.landroverusa.com/content/dam/land-rover/images/range-rover/2023/overview/range-rover-sv-overview-desktop.jpg',
-      price: 180000,
-      brand: 'Land Rover',
-      category: 'Luxury SUV',
-      description:
-          '523hp V8 with executive rear seats, premium leather interiors and terrain response',
-      averageRating: 4.7,
-      reviewCount: 198,
-      availableColors: ['Santorini Black', 'Lantau Bronze', 'Arctic White'],
-      discount: 8,
-    ),
-    CarsModel(
-      id: '4',
-      title: '2023 Audi RS e-tron GT',
-      image:
-          'https://www.audi.com/content/dam/gbp2/models/rs/e-tron-gt/rs-e-tron-gt/overview/1920x1080/1920x1080-rs-e-tron-gt-01.jpg',
-      price: 142000,
-      brand: 'Audi',
-      category: 'Electric',
-      description:
-          '637hp all-electric with 238mi range, 0-60mph in 3.1s and quattro AWD',
-      averageRating: 4.8,
-      reviewCount: 231,
-      availableColors: ['Tactical Green', 'Daytona Gray', 'Ultra Blue'],
-    ),
-    CarsModel(
-      id: '5',
-      title: '2023 BMW M5 Competition',
-      image:
-          'https://www.bmwusa.com/content/dam/bmw/common/all-models/m-series/m5-sedan/2023/overview/bmw-m5-cs-overview-desktop.jpg',
-      price: 112000,
-      brand: 'BMW',
-      category: 'Performance Sedan',
-      description:
-          '617hp twin-turbo V8 with M xDrive AWD and carbon ceramic brakes',
-      averageRating: 4.7,
-      reviewCount: 312,
-      availableColors: [
-        'Frozen Marina Bay Blue',
-        'Black Sapphire',
-        'Imola Red',
-      ],
-      discount: 3,
-    ),
-  ];
+  List<CarsModel> favoriteCars = [];
 
   @override
   Widget build(BuildContext context) {
@@ -156,10 +78,7 @@ class FavoriteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppNavigation.navigateToServiceDetailScreen(
-          context,
-          CarsModel(id: 'id', title: 'title', image: 'image', price: 0),
-        );
+        AppNavigation.navigateToServiceDetailScreen(context, CarsModel());
       },
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -179,7 +98,7 @@ class FavoriteCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: CachedNetworkImage(
-                    imageUrl: product.image,
+                    imageUrl: product.mainImageUrl,
                     width: 80,
                     height: 80,
                     fit: BoxFit.cover,
@@ -272,7 +191,7 @@ class FavoriteCard extends StatelessWidget {
 
                   /// Title
                   CustomText(
-                    text: product.title,
+                    text: product.makeName,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     maxLine: 2,
@@ -283,7 +202,7 @@ class FavoriteCard extends StatelessWidget {
                   /// Price Range
                   RiyalPriceWidget(
                     child: CustomText(
-                      text: '${product.price}',
+                      text: product.listingPrice,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primaryColor,

@@ -37,7 +37,7 @@ class CarCard extends StatelessWidget {
             SizedBox(height: 8),
             RiyalPriceWidget(
               child: CustomText(
-                text: obj.price.toStringAsFixed(2),
+                text: obj.listingPrice,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -46,7 +46,7 @@ class CarCard extends StatelessWidget {
             // Title
             SizedBox(height: 4),
             CustomText(
-              text: obj.title,
+              text: obj.makeName,
               fontSize: 14,
               fontWeight: FontWeight.w500,
               maxLine: 2,
@@ -54,7 +54,7 @@ class CarCard extends StatelessWidget {
             ),
 
             // Rating (if available)
-            if (obj.averageRating != null) _buildRatingRow(),
+            // if (obj.averageRating != null) _buildRatingRow(),
           ],
         ),
       ),
@@ -89,11 +89,11 @@ class CarCard extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(8),
         ),
-        child: obj.image.isNotEmpty
+        child: obj.mainImageUrl.isNotEmpty
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: CachedNetworkImage(
-                  imageUrl: obj.image,
+                  imageUrl: obj.mainImageUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   placeholder: (context, url) => const Center(
@@ -110,28 +110,28 @@ class CarCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingRow() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Row(
-        children: [
-          ...List.generate(5, (index) {
-            return Icon(
-              Icons.star,
-              size: 14,
-              color: index < obj.averageRating!.floor()
-                  ? Colors.amber
-                  : Colors.grey[300],
-            );
-          }),
-          CustomText(
-            text:
-                ' ${obj.averageRating}${obj.reviewCount != null ? ' (${obj.reviewCount})' : ''}',
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildRatingRow() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 4),
+  //     child: Row(
+  //       children: [
+  //         ...List.generate(5, (index) {
+  //           return Icon(
+  //             Icons.star,
+  //             size: 14,
+  //             color: index < obj.averageRating!.floor()
+  //                 ? Colors.amber
+  //                 : Colors.grey[300],
+  //           );
+  //         }),
+  //         CustomText(
+  //           text:
+  //               ' ${obj.averageRating}${obj.reviewCount != null ? ' (${obj.reviewCount})' : ''}',
+  //           fontSize: 12,
+  //           color: Colors.grey[600],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

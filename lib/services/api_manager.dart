@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 import '../utils/api_endpoint.dart';
 import '../utils/application_shared_instance.dart';
@@ -86,7 +87,7 @@ class ApiManager {
   static Future<dynamic> update(String path, Map<String, dynamic> data,
       {bool byPassBaseUrl = false}) async {
     try {
-      var url = '${ApiEndpoint.baseUrl}/$path';
+      var url = '${ApiEndpoint.baseUrl}$path';
       if (byPassBaseUrl) {
         url = path;
       }
@@ -123,7 +124,7 @@ class ApiManager {
 
   static Future<void> delete(String path, {bool byPassBaseUrl = false}) async {
     try {
-      var url = '${ApiEndpoint.baseUrl}/$path';
+      var url = '${ApiEndpoint.baseUrl}$path';
       if (byPassBaseUrl) {
         url = path;
       }
@@ -145,6 +146,54 @@ class ApiManager {
         PrintLogs.printLog("An unknown error occurred");
       }
     }
+  }
+
+  static Future<dynamic> uploadFile(
+      String path,
+      File file, {
+        String fieldName = "file",
+        Map<String, String> fields = const {},
+        Map<String, String> headers = const {},
+        bool byPassBaseUrl = false,
+      }) async {
+    try {
+      var url = byPassBaseUrl ? path : "${ApiEndpoint.baseUrl}$path";
+
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+
+      request.headers.addAll({
+        "Authorization": "Bearer ${DataManager().authToken}",
+        ...headers,
+      });
+
+      request.fields.addAll(fields);
+
+      // ✅ Correct: attach file with contentType
+      final mimeType = file.path.endsWith(".png") || file.path.endsWith(".jpg")
+          ? MediaType("image", file.path.endsWith(".png") ? "png" : "jpeg")
+          : MediaType("application", "octet-stream");
+
+      request.files.add(await http.MultipartFile.fromPath(
+        fieldName,
+        file.path,
+        contentType: mimeType,
+      ));
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      PrintLogs.printLog("Upload Response: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        throw ApiException(response.statusCode, 'Failed to upload file');
+      }
+    } catch (e) {
+      PrintLogs.printLog("Upload error: $e");
+      return {};
+    }
+
   }
 
   static void _logCurlCommand(String method, String url, Map<String, String> headers, { dynamic body}) {

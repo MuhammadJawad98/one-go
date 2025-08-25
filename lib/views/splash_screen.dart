@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _initializeApp() async {
     try {
+      Provider.of<DashboardProvider>(context,listen: false).initializeCommonData();
       final results = await Future.wait([
         HelperFunctions.getFromPreference(AppSharedPref.userData),
         HelperFunctions.getFromPreference(AppSharedPref.authToken),
@@ -66,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         children: [
           Center(
-            child: Image.asset(AppAssets.splashImage, width: 150, height: 150),
+            child: Image.asset(AppAssets.logo, width: 150, height: 150),
           ),
           Positioned(
             bottom: 0,

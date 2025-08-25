@@ -1,3 +1,5 @@
+import 'package:car_wash_app/models/attachement_model.dart';
+
 class UserModel {
   String id = '';
   bool isActive = false;
@@ -6,6 +8,7 @@ class UserModel {
   String email = '';
   String profilePictureUrl = '';
   List<String> roles = [];
+  Attachment? attachment;
 
   UserModel();
 

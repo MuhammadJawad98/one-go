@@ -10,11 +10,11 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		NPA0zYRbd6C19MT4MfRqtJO//Cg=
+		ybo9l5OFj4Fge12opTvedTZmnqQ=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		0ZZ4yMic9qFJoI3I3XhZmB0XqFs=
+		MOCqHMDMj6g8zgABR+S/18M8Fk8=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -58,7 +58,7 @@
 		</data>
 		<key>flutter_assets/assets/images/.DS_Store</key>
 		<data>
-		ceK2gfdE9Wkxk3AT8EDyGTE36h8=
+		XBTiIihFJHpF+zbKifqyGbaex8o=
 		</data>
 		<key>flutter_assets/assets/images/apple_icon.png</key>
 		<data>
@@ -168,6 +168,10 @@
 		<data>
 		bnLh5Sfs63YdpdNU+roUJ6sH4xA=
 		</data>
+		<key>flutter_assets/assets/images/logo.png</key>
+		<data>
+		JY44+B6/w5fbH/EUY4zh169PUsI=
+		</data>
 		<key>flutter_assets/assets/images/logout.png</key>
 		<data>
 		plRXoGYvLETGOFxMy88sNmkJM/g=
@@ -240,10 +244,6 @@
 		<data>
 		ZzlchkFAJ2kFLJqCRPAccjcKxC4=
 		</data>
-		<key>flutter_assets/assets/images/splash_icon.png</key>
-		<data>
-		IRSgppr8u/uDueMa9Hav/Oqa2+g=
-		</data>
 		<key>flutter_assets/assets/images/star.png</key>
 		<data>
 		3Rl/hWGwud+xS71hJWoNHuzfRWI=
@@ -290,7 +290,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		JWImvy79MRdXiqEi/dqF6/PWn5I=
+		LYm3rrMqTJ51RpT3MYYLqdE0i/s=
 		</data>
 		<key>flutter_assets/lib/localization/languageFiles/ar.json</key>
 		<data>
@@ -323,14 +323,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			wVzmiG9I0LFz9hORKJDAuxHuQDbSLp0jjjVfgOnyMKk=
+			Lp8lEi1sU9r1mDQA4SlnfrTc7MubM7IYVPIXpTZZJBY=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qqDYJB/VG6Zz+IlSGvmhuSyXOQzRqhlP4TzOSe0ANHM=
+			CD5eCxy7PPs7luWuEWpLrcXXhuu1dJNG2IMXq//m7Ls=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -592,6 +592,13 @@
 			U+EzRSWEQVav9jPb3vXdGjLlhPQsVfJHY3VYnVQeJD8=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/logo.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			l3bLOjFx8d1dAE5df6HcrNUYAlr1g32IOAsiHDicyy8=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/logout.png</key>
 		<dict>
 			<key>hash2</key>
@@ -718,13 +725,6 @@
 			ab24k7TEDlFZ8B1Zve+WrNGFyIQtFA485HvFDaU2jxg=
 			</data>
 		</dict>
-		<key>flutter_assets/assets/images/splash_icon.png</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			qUYoL1A4SSXSDIMBH+Mynq8AZRF2RS6bsAD3ttygN3I=
-			</data>
-		</dict>
 		<key>flutter_assets/assets/images/star.png</key>
 		<dict>
 			<key>hash2</key>
@@ -806,7 +806,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			EaYTtpRkTY8ZEgeRO1jkfjcLHVT+QgPH6Ftt9rBHHtA=
+			S4S7T6gngCy34U3ewL+RrYTgZ2TiUx5rODMczPGZspY=
 			</data>
 		</dict>
 		<key>flutter_assets/lib/localization/languageFiles/ar.json</key>

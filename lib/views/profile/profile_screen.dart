@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/models/selection_object.dart';
 import 'package:car_wash_app/routes/app_navigation.dart';
+import 'package:car_wash_app/views/profile/widgets/profile_image_widget.dart';
 import 'package:car_wash_app/widgets/custom_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/dashboard_provider.dart';
 import '../../utils/app_assets.dart';
 import '../../utils/app_colors.dart';
@@ -69,41 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(height: 12),
 
                 ///profile image
-                Center(
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 120,
-                        height: 120,
-                        padding: EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.fieldBgColor,
-                        ),
-                        child: provider.userModel.profilePictureUrl.isNotEmpty
-                            ? CachedNetworkImage(
-                                imageUrl: provider.userModel.profilePictureUrl,
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(AppAssets.person),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Image.asset(
-                            AppAssets.profileEdit,
-                            width: 40,
-                            height: 40,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ProfileImageWidget(fromProfile: true),
                 SizedBox(height: 16),
                 CustomText(
                   text: provider.userModel.name,

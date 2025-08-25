@@ -64,8 +64,9 @@ class _CustomDropDownState extends State<CustomDropDown> {
       ),
       onTap: () async {
         showCustomBottomSheet(context, widget.list, onSelection: (result) {
-          PrintLogs.printLog("result: $result");
-          _tfController.text = HelperFunctions.capitalizeFirstLetter(result.title);
+          PrintLogs.printLog("result: ${result.title}");
+          // _tfController.text = HelperFunctions.capitalizeFirstLetter(result.title);
+          _tfController.text = result.title;
           widget.onSelection(result);
         });
       },
@@ -109,8 +110,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
                         },
                         itemBuilder: (BuildContext context, int index) {
                           return CustomLanTile(
-                              title: HelperFunctions.capitalizeFirstLetter(
-                                  list[index].title),
+                              title: HelperFunctions.capitalizeFirstLetter(list[index].title),
                               onTap: () {
                                 onSelection(list[index]);
                                 Navigator.pop(context);
