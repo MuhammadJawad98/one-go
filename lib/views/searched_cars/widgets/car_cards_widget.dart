@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:car_wash_app/models/car_model.dart';
-import 'package:car_wash_app/routes/app_navigation.dart';
-import 'package:car_wash_app/utils/app_colors.dart';
-import 'package:car_wash_app/widgets/custom_text.dart';
-import 'package:car_wash_app/widgets/riyal_price_widget.dart';
+import '../../../models/car_model.dart';
+import '../../../routes/app_navigation.dart';
+import '../../../utils/app_colors.dart';
+import '../../../widgets/custom_text.dart';
+import '../../../widgets/riyal_price_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,48 +14,57 @@ class CarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        AppNavigation.navigateToServiceDetailScreen(context, obj);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Featured badge
-            // Car image
-            Stack(
+    return Hero(
+      tag: '${obj.modelName}_${obj.id}',
+      child: Material(
+        child: GestureDetector(
+          onTap: () {
+            AppNavigation.navigateToServiceDetailScreen(context, obj);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.greyColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildCarImage(),
-                if (obj.isFeatured)
-                  Positioned(top: 10, left: 10, child: _buildFeaturedBadge()),
+                // Featured badge
+                // Car image
+                Stack(
+                  children: [
+                    _buildCarImage(),
+                    if (obj.isFeatured)
+                      Positioned(top: 10, left: 10, child: _buildFeaturedBadge()),
+                  ],
+                ),
+
+                // Price
+                SizedBox(height: 8),
+                RiyalPriceWidget(
+                  child: CustomText(
+                    text: obj.listingPrice,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                // Title
+                SizedBox(height: 4),
+                CustomText(
+                  text: obj.makeName,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  maxLine: 2,
+                  textOverflow: TextOverflow.ellipsis,
+                ),
+
+                // Rating (if available)
+                // if (obj.averageRating != null) _buildRatingRow(),
               ],
             ),
-
-            // Price
-            SizedBox(height: 8),
-            RiyalPriceWidget(
-              child: CustomText(
-                text: obj.listingPrice,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            // Title
-            SizedBox(height: 4),
-            CustomText(
-              text: obj.makeName,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              maxLine: 2,
-              textOverflow: TextOverflow.ellipsis,
-            ),
-
-            // Rating (if available)
-            // if (obj.averageRating != null) _buildRatingRow(),
-          ],
+          ),
         ),
       ),
     );
@@ -65,16 +74,16 @@ class CarCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: Colors.amber[100],
-          borderRadius: BorderRadius.circular(4),
+          color: AppColors.orangeColor,
+          borderRadius: BorderRadius.circular(30),
         ),
         child: CustomText(
           text: 'FEATURED',
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: Colors.amber[600],
+          color: AppColors.whiteColor,
         ),
       ),
     );

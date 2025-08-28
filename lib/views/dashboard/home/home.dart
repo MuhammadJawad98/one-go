@@ -1,3 +1,4 @@
+import 'package:car_wash_app/routes/app_navigation.dart';
 import 'package:car_wash_app/widgets/custom_empty_view.dart';
 
 import '../../../views/dashboard/home/widgets/filter_bottom_sheet.dart';
@@ -123,10 +124,25 @@ class _HomePageState extends State<HomePage> {
                           ),
                           SizedBox(height: 12),
 
-                          CustomText(
-                            text: 'Category',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(
+                                text: 'Services',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  AppNavigation.navigateToServicesScreen(context);
+                                },
+                                child: CustomText(
+                                  text: 'See All',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 12),
 
@@ -139,6 +155,7 @@ class _HomePageState extends State<HomePage> {
                                   obj: provider.categories[index],
                                   onTap: () {
                                     provider.onCategorySelection(index);
+                                    AppNavigation.navigateToServicesScreen(context);
                                   },
                                 );
                               },
@@ -157,10 +174,13 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
                               ),
-                              CustomText(
-                                text: 'See All',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
+                              GestureDetector(
+                                onTap: (){},
+                                child: CustomText(
+                                  text: 'See All',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ],
                           ),
@@ -189,10 +209,16 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
                               ),
-                              CustomText(
-                                text: 'See All',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
+                              GestureDetector(
+                                onTap: (){
+                                  provider.fetchCars(context,reset: true);
+                                  AppNavigation.navigateToSearchedItemsScreen(context);
+                                },
+                                child: CustomText(
+                                  text: 'See All',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ],
                           ),

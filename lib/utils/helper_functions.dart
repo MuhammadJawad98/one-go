@@ -790,6 +790,22 @@ class HelperFunctions {
     AppAlerts.showCustomPopupAlert(context: context, text: text, yesBtnText: getTranslated(context, AppStrings.ok), onTapConfirm: (){});
   }
 
+
+  static Future<void> openLocationInGoogleMaps(String lat,String lng) async {
+    try {
+      final url = Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$lng");
+
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        throw Exception("Could not open Google Maps.");
+      }
+    } catch (e) {
+      PrintLogs.printLog("Error opening Google Maps: $e");
+    }
+  }
+
+
 }
 
 enum LaunchType { phone, sms, email, url }

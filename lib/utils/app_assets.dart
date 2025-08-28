@@ -48,6 +48,7 @@ class AppAssets{
   static const String logout = 'assets/images/logout.png';
   static const String locationProfileIcon = 'assets/images/location_profile_icon.png';
   static const String pin = 'assets/images/pin.png';
+  static const String carServicePlaceholder = 'assets/images/car_service_placeholder.jpeg';
 
 
   static const String saudiRiyal = 'assets/images/saudi_riyal.png';

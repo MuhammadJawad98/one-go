@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:car_wash_app/models/attachement_model.dart';
 import 'package:car_wash_app/models/car_model.dart';
+import 'package:car_wash_app/models/services_model.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../models/car_detail_model.dart';
 import '../models/category_model.dart';
+import '../models/service_detail_model.dart';
 import '../utils/application_shared_instance.dart';
 import '../models/selection_object.dart';
 import '../utils/helper_functions.dart';
@@ -23,15 +25,19 @@ class DashboardProvider extends ChangeNotifier {
   bool isCarDetailLoading = false;
   bool hasMore = true;
   bool isLoading = false;
+  bool isServicesLoading = false;
   UserModel userModel = UserModel();
   Attachment attachment = Attachment();
   CarDetailsModel carDetailsModel = CarDetailsModel();
+  ServiceDetailModel serviceDetail = ServiceDetailModel();
   List<CarsModel> carsList = [];
   List<CarsModel> searchedCarsList = [];
   int currentPage = 1;
   int totalCars = 0;
   int totalSearchedCars = 0;
+  List<ServiceModel> servicesList = [];
   List<Category> categories = [];
+  List<SelectionObject> categoryList = [];
   List<SelectionObject> cities = [];
   List<SelectionObject> makes = [];
   List<SelectionObject> models = [];
@@ -359,8 +365,10 @@ class DashboardProvider extends ChangeNotifier {
       if (response['status'] == true) {
         if (response['data'] is List) {
           categories.clear();
+          categoryList.clear();
           for (var item in response['data']) {
             categories.add(Category.fromJson(item));
+            categoryList.add(SelectionObject(id: item['id']?.toString() ?? '', title:  item['name']?.toString() ?? '', value:  item['slug']?.toString() ?? '', isActive: item['isActive'] == true));
           }
           if (categories.isNotEmpty) {
             categories[0].isSelected = true;
@@ -580,6 +588,54 @@ class DashboardProvider extends ChangeNotifier {
       carDetailsModel = CarDetailsModel();
     }finally{
       updateProfileLoader(true);
+    }
+  }
+
+  void updateServicesLoader(bool val){
+    isServicesLoading = val;
+    notifyListeners();
+  }
+
+  void fetchServices(BuildContext context) async{
+    servicesList.clear();
+    updateServicesLoader(true);
+    try{
+      final response = await ApiManager.get(ApiEndpoint.serviceSearch);
+      PrintLogs.printLog("fetchServices response: $response");
+      if (response['status'] == true) {
+        if(response['data']['data'] is List){
+          List data = response['data']['data'] as List;
+          for (var e in data) {
+            servicesList.add(ServiceModel.fromJson(e));
+          }
+        }
+      }else{
+        HelperFunctions.handleApiMessages(response);
+      }
+    }catch(e){
+      PrintLogs.printLog('Exception fetchServices : $e');
+    }finally{
+      updateServicesLoader(false);
+    }
+  }
+
+  void fetchServiceDetails(BuildContext context, String serviceId) async{
+    serviceDetail = ServiceDetailModel();
+    updateServicesLoader(true);
+    try{
+      final response = await ApiManager.get("${ApiEndpoint.services}/$serviceId");
+      PrintLogs.printLog("fetchServices response: $response");
+      if (response['status'] == true) {
+        if(response['data'] is Map){
+          serviceDetail = ServiceDetailModel.fromJson(response['data']);
+        }
+      }else{
+        HelperFunctions.handleApiMessages(response);
+      }
+    }catch(e){
+      PrintLogs.printLog('Exception fetchServices : $e');
+    }finally{
+      updateServicesLoader(false);
     }
   }
 }

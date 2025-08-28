@@ -1,20 +1,20 @@
-import 'package:car_wash_app/providers/dashboard_provider.dart';
-import 'package:car_wash_app/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../views/searched_items/widgets/filter_bottom_sheet.dart';
+import '../../views/searched_cars/widgets/filter_bottom_sheet.dart';
+import '../../providers/dashboard_provider.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_text.dart';
+import '../../utils/app_assets.dart';
 import 'widgets/car_cards_widget.dart';
 
-class SearchedItemsScreen extends StatefulWidget {
-  const SearchedItemsScreen({super.key});
+class SearchedCarsScreen extends StatefulWidget {
+  const SearchedCarsScreen({super.key});
 
   @override
-  State<SearchedItemsScreen> createState() => _SearchedItemsScreenState();
+  State<SearchedCarsScreen> createState() => _SearchedCarsScreenState();
 }
 
-class _SearchedItemsScreenState extends State<SearchedItemsScreen> {
+class _SearchedCarsScreenState extends State<SearchedCarsScreen> {
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -111,6 +111,8 @@ class _SearchedItemsScreenState extends State<SearchedItemsScreen> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 childAspectRatio: 0.85,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
                               ),
                           itemCount: provider.searchedCarsList.length,
                           itemBuilder: (context, index) {
