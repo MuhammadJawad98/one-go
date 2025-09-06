@@ -15,6 +15,8 @@ class ApiEndpoint{
   static String carsMakes =  'cars/makes';
   static String serviceSearch =  'services/search';
   static String services =  'services';
+  static String customerOrders =  'customer/orders';
+  static String customerCars =  'customer/cars';
 
   static String register =  'register';
   static String logout =  'logout';

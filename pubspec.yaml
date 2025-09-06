@@ -69,7 +69,9 @@ dependencies:
   google_maps_flutter: ^2.12.3
   location: ^8.0.1
   dotted_border: ^3.1.0
-  http_parser: ^4.0.2
+  flutter_vector_icons: ^2.0.0
+#  http_parser: ^4.0.2
+  flutter_widget_from_html_core: ^0.17.0
 #  record: ^5.2.0
 #  flutter_linkify: ^6.0.0
 #  mime: ^2.0.0

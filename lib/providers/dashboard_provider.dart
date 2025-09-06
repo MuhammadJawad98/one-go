@@ -1,21 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:car_wash_app/models/attachement_model.dart';
 import 'package:car_wash_app/models/car_model.dart';
 import 'package:car_wash_app/models/services_model.dart';
+import 'package:car_wash_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+
 import '../models/car_detail_model.dart';
 import '../models/category_model.dart';
-import '../models/service_detail_model.dart';
-import '../utils/application_shared_instance.dart';
 import '../models/selection_object.dart';
-import '../utils/helper_functions.dart';
-import '../utils/app_sharedpref.dart';
+import '../models/service_detail_model.dart';
+import '../models/user_model.dart';
 import '../services/api_manager.dart';
 import '../utils/api_endpoint.dart';
-import '../models/user_model.dart';
 import '../utils/app_alerts.dart';
+import '../utils/app_sharedpref.dart';
+import '../utils/application_shared_instance.dart';
+import '../utils/helper_functions.dart';
 import '../utils/print_log.dart';
 
 class DashboardProvider extends ChangeNotifier {
@@ -212,6 +216,7 @@ class DashboardProvider extends ChangeNotifier {
         }
       } else {
         HelperFunctions.handleApiMessages(response);
+        Provider.of<AuthProvider>(context,listen: false).logout(context);
       }
     } catch (e) {
       AppAlerts.showSnackBar(
@@ -421,7 +426,9 @@ class DashboardProvider extends ChangeNotifier {
     String? color,
     String? makeId,
     String? makeSlug,
+    String? make,
     String? modelId,
+    String? model,
     String? modelSlug,
     String? cityId,
     String? citySlug,
@@ -596,28 +603,78 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void fetchServices(BuildContext context) async{
+  // void fetchServices(BuildContext context) async{
+  //   servicesList.clear();
+  //   updateServicesLoader(true);
+  //   try{
+  //     final response = await ApiManager.get(ApiEndpoint.serviceSearch);
+  //     PrintLogs.printLog("fetchServices response: $response");
+  //     if (response['status'] == true) {
+  //       if(response['data']['data'] is List){
+  //         List data = response['data']['data'] as List;
+  //         for (var e in data) {
+  //           servicesList.add(ServiceModel.fromJson(e));
+  //         }
+  //       }
+  //     }else{
+  //       HelperFunctions.handleApiMessages(response);
+  //     }
+  //   }catch(e){
+  //     PrintLogs.printLog('Exception fetchServices : $e');
+  //   }finally{
+  //     updateServicesLoader(false);
+  //   }
+  // }
+
+  Future<void> fetchServices(
+      BuildContext context, {
+        String? search,
+        String? citySlug,
+        String? minPrice,
+        String? maxPrice,
+        bool reset = false,
+        // String? page,
+        // String? perPage,
+
+      }) async {
     servicesList.clear();
     updateServicesLoader(true);
-    try{
-      final response = await ApiManager.get(ApiEndpoint.serviceSearch);
-      PrintLogs.printLog("fetchServices response: $response");
+
+    try {
+
+    // http://144.91.76.33:3002/api/v1/services/search?page=1&limit=9&sortBy=latest&citySlug=dammam&minPrice=1&maxPrice=135001
+
+    final uri = Uri.parse(ApiEndpoint.serviceSearch).replace(
+        queryParameters: {
+          'page': reset ? '1': currentPage.toString(),
+          'limit': '100',
+          // 'sortBy': 'latest',
+          if (search != null && search.trim().isNotEmpty) 'search' : search.trim(),
+          if (citySlug != null && citySlug.trim().isNotEmpty) 'citySlug' : citySlug.trim(),
+          if (minPrice != null) 'minPrice' : minPrice.trim(),
+          if (maxPrice != null) 'maxPrice' : maxPrice.trim(),
+        },
+      );
+
+      final response = await ApiManager.get(uri.toString());
+
+      PrintLogs.printLog("fetchServicesFiltered response: $response");
+
       if (response['status'] == true) {
-        if(response['data']['data'] is List){
-          List data = response['data']['data'] as List;
-          for (var e in data) {
-            servicesList.add(ServiceModel.fromJson(e));
-          }
+        final data = response['data']?['data'];
+        if (data is List) {
+          servicesList.addAll(data.map<ServiceModel>((e) => ServiceModel.fromJson(e)));
         }
-      }else{
+      } else {
         HelperFunctions.handleApiMessages(response);
       }
-    }catch(e){
-      PrintLogs.printLog('Exception fetchServices : $e');
-    }finally{
+    } catch (e) {
+      PrintLogs.printLog('Exception fetchServicesFiltered : $e');
+    } finally {
       updateServicesLoader(false);
     }
   }
+
 
   void fetchServiceDetails(BuildContext context, String serviceId) async{
     serviceDetail = ServiceDetailModel();

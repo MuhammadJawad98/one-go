@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import '../../../models/car_model.dart';
 import '../../../routes/app_navigation.dart';
 import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/riyal_price_widget.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class CarCard extends StatelessWidget {
   final CarsModel obj;

@@ -29,12 +29,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   ];
   
   List<SelectionObject> prices = [
-    SelectionObject(id: '1',title: 'No Max Price'),
-    SelectionObject(id: '2',title: '2000'),
-    SelectionObject(id: '3',title: '5000'),
-    SelectionObject(id: '4',title: '10000'),
-    SelectionObject(id: '5',title: '20000'),
-    SelectionObject(id: '6',title: '30000'),
+    SelectionObject(id: '1',title: 'All Prices',),
+    SelectionObject(id: '2',title: 'Under 50,000 SAR',maxPrice: '50000'),
+    SelectionObject(id: '3',title: '50,000 - 10,000 SAR',minPrice: '50000',maxPrice: '10000'),
+    SelectionObject(id: '4',title: '10,000 - 20,000 SAR',minPrice: '10000',maxPrice: '20000'),
+    SelectionObject(id: '5',title: '20,000 - 50,000 SAR',minPrice: '20000',maxPrice: '50000'),
+    SelectionObject(id: '6',title: 'Over 50,000 SAR',minPrice: '50000'),
   ];
 
   @override
@@ -130,7 +130,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             child: CustomButton(
               text: 'Search',
               onPressed: () {
-                Provider.of<DashboardProvider>(context,listen: false).fetchCars(context,reset: true,makeSlug: selectedMake?.value ?? '');
+                Provider.of<DashboardProvider>(context,listen: false).fetchCars(context,reset: true,make: selectedMake?.value, model: selectedModel?.value, maxPrice: selectedPrice?.maxPrice ,minPrice: selectedPrice?.minPrice);
                 Navigator.pop(context);
                 AppNavigation.navigateToSearchedItemsScreen(context);
                 // You can also pass selected values to next screen

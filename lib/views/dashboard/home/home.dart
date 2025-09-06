@@ -1,18 +1,18 @@
 import 'package:car_wash_app/routes/app_navigation.dart';
 import 'package:car_wash_app/widgets/custom_empty_view.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../views/dashboard/home/widgets/filter_bottom_sheet.dart';
 import '../../../providers/dashboard_provider.dart';
 import '../../../utils/app_assets.dart';
 import '../../../utils/app_colors.dart';
 import '../../../views/dashboard/home/widgets/brand_cell.dart';
-import '../../../views/dashboard/home/widgets/popular_service_widget.dart';
 import '../../../views/dashboard/home/widgets/category_widget.dart';
+import '../../../views/dashboard/home/widgets/filter_bottom_sheet.dart';
+import '../../../views/dashboard/home/widgets/popular_service_widget.dart';
 import '../../../views/dashboard/home/widgets/special_offer_widget.dart';
 import '../../../widgets/custom_back_button.dart';
 import '../../../widgets/custom_text.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

@@ -5,14 +5,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/riyal_price_widget.dart';
+
 import '../../providers/dashboard_provider.dart';
-import '../../widgets/custom_back_button.dart';
 import '../../routes/app_navigation.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_text.dart';
 import '../../utils/app_assets.dart';
 import '../../utils/app_colors.dart';
+import '../../widgets/custom_back_button.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_text.dart';
+import '../../widgets/riyal_price_widget.dart';
 import 'sections/about_service_section.dart';
 import 'sections/contact_info_section.dart';
 import 'sections/operation_hour_selection.dart';
@@ -336,6 +337,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
         ),
         const SizedBox(width: 16),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             RiyalPriceWidget(
               child: CustomText(
@@ -459,7 +461,17 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 hasBorder: true,
                 borderColor: AppColors.primaryColor,
                 onPressed: () {
-                  // Contact functionality
+                  String number = '';
+                  if(provider.serviceDetail.branchPhone.isNotEmpty){
+                    number = provider.serviceDetail.branchPhone.trim();
+                  }else{
+                    number = provider.serviceDetail.contactNumber.trim();
+                  }
+                  if(number.trim().isNotEmpty){
+                    HelperFunctions.launchAction(type: LaunchType.phone, value: number);
+                  }else if(provider.serviceDetail.branchEmail.trim().isNotEmpty){
+                    HelperFunctions.launchAction(type: LaunchType.email, value: provider.serviceDetail.branchEmail.trim());
+                  }
                 },
               ),
             ),
@@ -470,6 +482,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 borderRadius: 12,
                 onPressed: () {
                   // Book service functionality
+                  AppNavigation.navigateToBookServiceScreen(context, provider.serviceDetail);
                 },
               ),
             ),

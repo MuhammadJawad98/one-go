@@ -199,4 +199,9 @@ class AuthProvider extends ChangeNotifier {
 
     return cleanedNumber;
   }
+
+  void logout(BuildContext context) {
+    HelperFunctions.clearPreference();
+    AppNavigation.navigateToLoginScreen(context);
+  }
 }

@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/utils/app_assets.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+
 import '../../../models/services_model.dart';
 import '../../../routes/app_navigation.dart';
 import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/riyal_price_widget.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class ServiceCardWidget extends StatelessWidget {
   final ServiceModel obj;

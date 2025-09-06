@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:car_wash_app/utils/app_colors.dart';
 import 'package:car_wash_app/widgets/custom_text.dart';
+import 'package:flutter/material.dart';
 
 class CustomFeatureTile extends StatelessWidget {
   final IconData icon;

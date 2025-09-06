@@ -6,7 +6,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/dashboard_provider.dart';
-import '../../routes/app_navigation.dart';
 import '../../utils/app_assets.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_text.dart';

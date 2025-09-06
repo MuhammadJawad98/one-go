@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'custom_text.dart'; // Make sure to import your CustomText widget
 
 class CustomEmptyView extends StatelessWidget {

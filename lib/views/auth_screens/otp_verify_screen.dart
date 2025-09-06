@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 
-import '../../routes/app_navigation.dart';
 import '../../utils/app_colors.dart';
 
 class OtpVerifyScreen extends StatefulWidget {

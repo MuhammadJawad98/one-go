@@ -4,6 +4,8 @@ import 'package:car_wash_app/views/profile/widgets/profile_image_widget.dart';
 import 'package:car_wash_app/widgets/custom_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/auth_provider.dart';
 import '../../providers/dashboard_provider.dart';
 import '../../utils/app_assets.dart';
 import '../../utils/app_colors.dart';
@@ -26,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     SelectionObject(id: '3', title: 'Payment Methods', image: AppAssets.card),
     SelectionObject(id: '4', title: 'My Orders', image: AppAssets.calendar),
-    // SelectionObject(id: '5', title: 'My Wallet', image: AppAssets.wallet),
+    SelectionObject(id: '5', title: 'My Cars', image: AppAssets.car),
     SelectionObject(id: '6', title: 'Settings', image: AppAssets.setting),
     SelectionObject(id: '7', title: 'Help Center', image: AppAssets.infoCircle),
     SelectionObject(id: '8', title: 'Privacy Policy', image: AppAssets.lock),
@@ -88,6 +90,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               AppNavigation.navigateToYourProfile(context);
                             } else if (options[index].id == '2') {
                               AppNavigation.navigateToManageAddress(context);
+                            }else if (options[index].id == '4') {
+                              AppNavigation.navigateToOrdersListScreen(context);
+                            }else if (options[index].id == '5') {
+                              AppNavigation.navigateToCarListingsScreen(context);
+                            }else if (options[index].id == '10') {
+                              Provider.of<AuthProvider>(context,listen: false).logout(context);
                             }
                           },
                           child: Row(

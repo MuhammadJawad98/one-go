@@ -1,5 +1,4 @@
 import 'package:car_wash_app/models/category_model.dart';
-import 'package:car_wash_app/models/selection_object.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../utils/app_colors.dart';

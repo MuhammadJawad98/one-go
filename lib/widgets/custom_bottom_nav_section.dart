@@ -16,17 +16,19 @@ class CustomBottomNavSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      padding: EdgeInsets.all(24),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
         color: AppColors.whiteColor,
-        border: Border.all(width: 0.5, color: AppColors.lightGreyTextColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(10),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
-      child: CustomButton(text: text, onPressed: onTap),
+      child: SafeArea(child: CustomButton(text: text, onPressed: onTap)),
     );
   }
 }

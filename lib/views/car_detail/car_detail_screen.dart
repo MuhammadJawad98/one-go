@@ -7,14 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+
 import '../../utils/app_assets.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text.dart';
-import 'widgets/overview_section.dart';
 import 'widgets/car_detail_section.dart';
 import 'widgets/features_section.dart';
+import 'widgets/overview_section.dart';
 
 class CarDetailScreen extends StatefulWidget {
   final CarsModel obj;

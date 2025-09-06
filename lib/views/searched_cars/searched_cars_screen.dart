@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../views/searched_cars/widgets/filter_bottom_sheet.dart';
+
 import '../../providers/dashboard_provider.dart';
+import '../../utils/app_assets.dart';
+import '../../views/searched_cars/widgets/filter_bottom_sheet.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_text.dart';
-import '../../utils/app_assets.dart';
 import 'widgets/car_cards_widget.dart';
 
 class SearchedCarsScreen extends StatefulWidget {

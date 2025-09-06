@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/dashboard_provider.dart';
+
 import '../../../models/selection_object.dart';
+import '../../../providers/dashboard_provider.dart';
 import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_drop_down.dart';
@@ -19,7 +20,7 @@ class ServiceFilterBottomSheetContent extends StatefulWidget {
 class _ServiceFilterBottomSheetContentState
     extends State<ServiceFilterBottomSheetContent> {
   final TextEditingController _searchController = TextEditingController();
-  RangeValues _priceRange = const RangeValues(0, 1000);
+  RangeValues _priceRange = const RangeValues(1, 1000);
   SelectionObject? _selectedCategory;
   SelectionObject? _selectedCity;
   bool _featuredOnly = false;
@@ -108,7 +109,7 @@ class _ServiceFilterBottomSheetContentState
                       const SizedBox(height: 8),
                       RangeSlider(
                         values: _priceRange,
-                        min: 0,
+                        min: 1,
                         max: 5000,
                         divisions: 50,
                         activeColor: AppColors.primaryColor,
@@ -169,9 +170,9 @@ class _ServiceFilterBottomSheetContentState
                           Expanded(
                             child: CustomButton(
                               text: 'RESET',
-                              backgroundColor: AppColors.greyColor,
+                              backgroundColor: AppColors.blackColor.withAlpha(100),
                               textColor: AppColors.whiteColor,
-                              onPressed: _resetFilters,
+                              onPressed: ()=> _resetFilters(provider),
                               borderRadius: 12,
                             ),
                           ),
@@ -219,36 +220,29 @@ class _ServiceFilterBottomSheetContentState
     );
   }
 
-  void _resetFilters() {
-    setState(() {
-      _searchController.clear();
-      _priceRange = const RangeValues(0, 1000);
-      _selectedCategory = null;
-      _selectedCity = null;
-      _featuredOnly = false;
-    });
+  void _resetFilters(DashboardProvider provider) {
+    // setState(() {
+    //   _searchController.clear();
+    //   _priceRange = const RangeValues(0, 1000);
+    //   _selectedCategory = null;
+    //   _selectedCity = null;
+    //   _featuredOnly = false;
+    // });
+    provider.fetchServices(context, reset: true);
+    Navigator.pop(context);
+
   }
 
   void _applyFilters(DashboardProvider provider) {
-    final filters = {
-      'keyword': _searchController.text.trim(),
-      'category': _selectedCategory?.value,
-      'city': _selectedCity?.value,
-      'minPrice': _priceRange.start.round().toString(),
-      'maxPrice': _priceRange.end.round().toString(),
-      'featuredOnly': _featuredOnly.toString(),
-    };
-
-    // provider.fetchServices(
-    //   context,
-    //   keyword: _searchController.text.trim(),
-    //   categorySlug: _selectedCategory?.value,
-    //   citySlug: _selectedCity?.value,
-    //   minPrice: _priceRange.start.round().toString(),
-    //   maxPrice: _priceRange.end.round().toString(),
-    //   isFeatured: _featuredOnly ? 'true' : null,
-    //   reset: true,
-    // );
+    provider.fetchServices(
+      context,
+      search: _searchController.text.trim(),
+      citySlug: _selectedCity?.value,
+      minPrice: _priceRange.start.round().toString(),
+      maxPrice: _priceRange.end.round().toString(),
+      // isFeatured: _featuredOnly ? 'true' : null,
+      reset: true,
+    );
 
     Navigator.pop(context);
   }

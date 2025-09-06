@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+
 import '../../../models/service_detail_model.dart';
-import '../../../widgets/custom_text.dart';
 import '../../../utils/app_colors.dart';
+import '../../../widgets/custom_text.dart';
 
 class AboutServiceSection extends StatelessWidget {
   final ServiceDetailModel serviceDetail;

@@ -1,8 +1,8 @@
 import 'package:car_wash_app/widgets/custom_empty_view.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import '../../../models/car_detail_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
+import '../../../models/car_detail_model.dart';
 import '../../../widgets/feature_tile_widget.dart';
 
 class SpecificationSection extends StatelessWidget {

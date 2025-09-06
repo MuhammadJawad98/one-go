@@ -1,16 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/models/selection_object.dart';
 import 'package:car_wash_app/models/user_model.dart';
 import 'package:car_wash_app/widgets/custom_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+
 import '../../../providers/dashboard_provider.dart';
-import '../../../widgets/custom_bottom_nav_section.dart';
-import '../../../widgets/custom_drop_down.dart';
-import '../../../utils/app_assets.dart';
 import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_back_button.dart';
+import '../../../widgets/custom_bottom_nav_section.dart';
+import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
 import '../widgets/profile_image_widget.dart';

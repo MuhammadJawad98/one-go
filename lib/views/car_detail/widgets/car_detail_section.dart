@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../widgets/custom_empty_view.dart';
+
 import '../../../models/car_detail_model.dart';
+import '../../../widgets/custom_empty_view.dart';
 import '../../../widgets/feature_tile_widget.dart';
 
 class CarsDetailSection extends StatelessWidget {

@@ -1,25 +1,30 @@
+import 'package:car_wash_app/models/service_detail_model.dart';
 import 'package:car_wash_app/models/services_model.dart';
 import 'package:car_wash_app/views/services/service_detail_screen.dart';
 import 'package:car_wash_app/views/services/services_screen.dart';
 import 'package:flutter/material.dart';
+
 import '../models/car_model.dart';
-import '../views/car_detail/car_detail_screen.dart';
-import '../views/custom_image_viewer_screen.dart';
-import '../views/profile/views/manage_address.dart';
 import '../views/allow_notification_screen/allow_notification_screen.dart';
 import '../views/auth_screens/login_screen.dart';
 import '../views/auth_screens/otp_verify_screen.dart';
 import '../views/auth_screens/signup_screen.dart';
 import '../views/auth_screens/update_password_screen.dart';
+import '../views/car_detail/car_detail_screen.dart';
+import '../views/custom_image_viewer_screen.dart';
 import '../views/dashboard/dashboard_screen.dart';
 import '../views/location_screen/location_allow_screen.dart';
 import '../views/location_screen/manually_location_enter_screen.dart';
 import '../views/messages/messages_screen.dart';
+import '../views/my_cars/cars_listing_screen.dart';
 import '../views/onboarding_screens/onboarding_screen.dart';
 import '../views/onboarding_screens/welcome_screen.dart';
+import '../views/orders/my_orders_screen.dart';
+import '../views/profile/views/manage_address.dart';
 import '../views/profile/views/your_profile.dart';
 import '../views/profile_screens/complete_your_profile_screen.dart';
 import '../views/searched_cars/searched_cars_screen.dart';
+import '../views/services/book_service_screen.dart';
 
 class AppNavigation{
   static void navigateToWelcomeScreen(BuildContext context){
@@ -94,6 +99,15 @@ class AppNavigation{
   }
   static void navigateToServiceDetailsScreen(BuildContext context,ServiceModel serviceId){
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  ServiceDetailScreen(obj: serviceId)));
+  }
+  static void navigateToBookServiceScreen(BuildContext context,ServiceDetailModel obj){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  BookServiceScreen(service: obj)));
+  }
+  static void navigateToOrdersListScreen(BuildContext context){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  OrdersListScreen()));
+  }
+  static void navigateToCarListingsScreen(BuildContext context){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  MyCarsScreen()));
   }
   //
   // static void navigateToCustomImageViewer(BuildContext context,List<String> imagesList){

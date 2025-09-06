@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+
 import '../../../models/service_detail_model.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_text.dart';
 import '../../../utils/app_colors.dart';
+import '../../../widgets/custom_text.dart';
 
 class ContactInfoSection extends StatelessWidget {
   final ServiceDetailModel serviceDetail;

@@ -3,6 +3,7 @@ import 'package:car_wash_app/widgets/custom_text.dart';
 import 'package:car_wash_app/widgets/riyal_price_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../../../models/car_model.dart';
 import '../../../../routes/app_navigation.dart';
 import '../../../../utils/app_colors.dart';
