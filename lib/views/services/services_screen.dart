@@ -75,7 +75,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
-                                childAspectRatio: 0.7,
+                                childAspectRatio: 0.6,
                                 mainAxisSpacing: 16,
                                 crossAxisSpacing: 16,
                               ),

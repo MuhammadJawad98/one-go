@@ -48,7 +48,7 @@ class ServiceCardWidget extends StatelessWidget {
                 ),
 
                 // Price
-                SizedBox(height: 8),
+                SizedBox(height: 4),
                 RiyalPriceWidget(
                   child: CustomText(
                     text: obj.price,
@@ -58,7 +58,6 @@ class ServiceCardWidget extends StatelessWidget {
                 ),
 
                 // Title
-                SizedBox(height: 4),
                 CustomText(
                   text: obj.name,
                   fontSize: 16,
@@ -66,23 +65,23 @@ class ServiceCardWidget extends StatelessWidget {
                   maxLine: 2,
                   textOverflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 2),
                 Row(
                   children: [
-                    Icon(Octicons.gear, size: 16),
+                    Icon(Octicons.gear, size: 14),
                     SizedBox(width: 10),
                     Expanded(
-                      child: CustomText(text: obj.categoryName, fontSize: 13),
+                      child: CustomText(text: obj.categoryName, fontSize: 12),
                     ),
                   ],
                 ),
                 SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Octicons.location, size: 16),
+                    Icon(Octicons.location, size: 14),
                     SizedBox(width: 10),
                     Expanded(
-                      child: CustomText(text: obj.cityName, fontSize: 13),
+                      child: CustomText(text: obj.cityName, fontSize: 12),
                     ),
                   ],
                 ),

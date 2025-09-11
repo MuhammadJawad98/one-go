@@ -32,13 +32,22 @@ class ApiManager {
     } catch (e) {
       if (e is SocketException) {
         PrintLogs.printLog("No internet connection");
-        return {};
+        return {
+          "status": false,
+          "message": "You’re offline. Check your internet connection and try again.",
+        };
       } else if (e is TimeoutException) {
         PrintLogs.printLog("Request timed out");
-        return {};
+        return {
+          "status": false,
+          "message": "Request timed out. Please try again.",
+        };
       } else {
-        PrintLogs.printLog("An unknown error occurred");
-        return {};
+        PrintLogs.printLog("An unknown error occurred: $e");
+        return {
+          "status": false,
+          "message": "Something went wrong. Please try again.",
+        };
       }
     }
   }
@@ -73,13 +82,22 @@ class ApiManager {
     } catch (e) {
       if (e is SocketException) {
         PrintLogs.printLog("No internet connection");
-        return {};
+        return {
+          "status": false,
+          "message": "You’re offline. Check your internet connection and try again.",
+        };
       } else if (e is TimeoutException) {
         PrintLogs.printLog("Request timed out");
-        return {};
+        return {
+          "status": false,
+          "message": "Request timed out. Please try again.",
+        };
       } else {
-        PrintLogs.printLog("An unknown error occurred");
-        return {};
+        PrintLogs.printLog("An unknown error occurred: $e");
+        return {
+          "status": false,
+          "message": "Something went wrong. Please try again.",
+        };
       }
     }
   }
@@ -111,13 +129,22 @@ class ApiManager {
     } catch (e) {
       if (e is SocketException) {
         PrintLogs.printLog("No internet connection");
-        return {};
+        return {
+          "status": false,
+          "message": "You’re offline. Check your internet connection and try again.",
+        };
       } else if (e is TimeoutException) {
         PrintLogs.printLog("Request timed out");
-        return {};
+        return {
+          "status": false,
+          "message": "Request timed out. Please try again.",
+        };
       } else {
-        PrintLogs.printLog("An unknown error occurred");
-        return {};
+        PrintLogs.printLog("An unknown error occurred: $e");
+        return {
+          "status": false,
+          "message": "Something went wrong. Please try again.",
+        };
       }
     }
   }

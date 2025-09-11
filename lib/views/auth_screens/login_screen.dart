@@ -30,8 +30,15 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SafeArea(child: SizedBox()),
-            SizedBox(height: 73),
+            SafeArea(
+              top: true,
+              left: false,
+              right: false,
+              bottom: false,
+              child: Center(
+                child: Image.asset(AppAssets.logo, width: 150, height: 150),
+              ),
+            ),
             Center(
               child: CustomText(
                 text: 'Sign In',

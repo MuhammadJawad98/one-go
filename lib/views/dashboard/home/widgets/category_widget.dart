@@ -23,7 +23,7 @@ class CategoryWidget extends StatelessWidget {
         child: Center(
           child: CustomText(
             text: obj.name,
-            color: obj.isSelected ? AppColors.whiteColor : AppColors.primaryColor,
+            color: obj.isSelected ? AppColors.whiteColor : AppColors.blackColor,
           ),
         ),
       ),

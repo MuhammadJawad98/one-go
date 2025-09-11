@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
 
                           SizedBox(
                             height: 35,
-                            child: ListView.separated(
+                            child: provider.categories.isEmpty ? Center(child: CustomText(text: 'No Services found!')) :ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return CategoryWidget(

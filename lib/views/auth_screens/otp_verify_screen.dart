@@ -34,7 +34,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SafeArea(child: Row(children: [CustomImageButton()])),
+                  SafeArea(child: Row(children: [CustomImageButton(onTap: ()=> Navigator.pop(context))])),
                   const SizedBox(height: 36),
 
                   // Title
@@ -76,38 +76,55 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                   const SizedBox(height: 36),
 
                   // OTP entry using pin_code_fields
-                  PinCodeTextField(
-                    appContext: context,
-                    hintCharacter: '-',
-                    autoDismissKeyboard: true,
-                    hintStyle: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12,
-                    ),
-                    length: 6,
-                    obscureText: false,
-                    pastedTextStyle: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12,
-                    ),
-                    animationType: AnimationType.fade,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(10),
-                      fieldHeight: 57,
-                      fieldWidth: 57,
-                      borderWidth: 1,
-                      inactiveColor: AppColors.greyColor,
-                      selectedColor: AppColors.primaryColor,
-                      activeColor: AppColors.primaryColor,
-                      inactiveFillColor: AppColors.fieldBgColor,
-                      selectedFillColor: AppColors.fieldBgColor,
-                      activeFillColor: AppColors.fieldBgColor,
-                    ),
-                    keyboardType: TextInputType.number,
-                    animationDuration: const Duration(milliseconds: 300),
-                    onChanged: (value) {
-                      otpCode = value;
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      const int otpLength = 6;
+                      double gap = 8.0;
+
+                      // Available width inside the current padding
+                      final maxW = constraints.maxWidth;
+
+                      // Try with default gap; if too tight, shrink the gap
+                      double boxW = (maxW - gap * (otpLength - 1)) / otpLength;
+                      if (boxW < 44) {
+                        gap = 4.0;
+                        boxW = (maxW - gap * (otpLength - 1)) / otpLength;
+                      }
+
+                      // Clamp to a sensible range
+                      final fieldWidth = boxW.clamp(36.0, 57.0);
+                      final fieldHeight = fieldWidth.clamp(44.0, 57.0);
+
+                      return Padding(
+                        // Optional: give a tiny horizontal breathing room
+                        padding: EdgeInsets.symmetric(horizontal: gap / 2),
+                        child: PinCodeTextField(
+                          appContext: context,
+                          length: otpLength,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          animationType: AnimationType.fade,
+                          keyboardType: TextInputType.number,
+                          hintCharacter: '-',
+                          autoDismissKeyboard: true,
+                          hintStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 12),
+                          pastedTextStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 12),
+                          animationDuration: const Duration(milliseconds: 300),
+                          onChanged: (value) => otpCode = value,
+                          pinTheme: PinTheme(
+                            shape: PinCodeFieldShape.box,
+                            borderRadius: BorderRadius.circular(10),
+                            fieldHeight: fieldHeight,
+                            fieldWidth: fieldWidth,
+                            borderWidth: 1,
+                            inactiveColor: AppColors.greyColor,
+                            selectedColor: AppColors.primaryColor,
+                            activeColor: AppColors.primaryColor,
+                            inactiveFillColor: AppColors.fieldBgColor,
+                            selectedFillColor: AppColors.fieldBgColor,
+                            activeFillColor: AppColors.fieldBgColor,
+                          ),
+                        ),
+                      );
                     },
                   ),
 

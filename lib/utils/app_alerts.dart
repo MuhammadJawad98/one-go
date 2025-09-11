@@ -153,18 +153,13 @@ class AppAlerts {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  CustomText(
+                    text: title,
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Text(
-                    msg,
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
+                  CustomText(text: msg, color: Colors.white, fontSize: 14),
                 ],
               ),
             ),

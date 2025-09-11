@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.onego.mobileapp</string>
+	<string>com.onego.mobileapp.customer</string>
 	<key>PROJECT_ID</key>
 	<string>one-go-ecommerce</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:637391228731:ios:41217e94574c30a66d311e</string>
+	<string>1:637391228731:ios:5ab757b028ded3906d311e</string>
 </dict>
 </plist>

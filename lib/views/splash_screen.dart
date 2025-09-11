@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         children: [
           Center(
-            child: Image.asset(AppAssets.logo, width: 150, height: 150),
+            child: Image.asset(AppAssets.logo, width: 250, height: 250),
           ),
           Positioned(
             bottom: 0,

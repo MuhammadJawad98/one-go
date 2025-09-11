@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCqQoFQOzwWnOgEeiE-vGrpZvoVkNUdb7Q',
-    appId: '1:637391228731:android:06735415b5589f276d311e',
+    appId: '1:637391228731:android:d8ea609e657747d46d311e',
     messagingSenderId: '637391228731',
     projectId: 'one-go-ecommerce',
     storageBucket: 'one-go-ecommerce.firebasestorage.app',
@@ -66,11 +66,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBvrWf_3NnLu4kSQ5MrPTQOHUT-16A7gX0',
-    appId: '1:637391228731:ios:41217e94574c30a66d311e',
+    appId: '1:637391228731:ios:5ab757b028ded3906d311e',
     messagingSenderId: '637391228731',
     projectId: 'one-go-ecommerce',
     storageBucket: 'one-go-ecommerce.firebasestorage.app',
-    iosBundleId: 'com.onego.mobileapp',
+    iosBundleId: 'com.onego.mobileapp.customer',
   );
 
 }

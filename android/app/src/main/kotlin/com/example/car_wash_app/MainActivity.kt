@@ -1,4 +1,4 @@
-package com.onego.mobileapp
+package com.onego.mobileapp.customer
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -144,18 +144,23 @@ class _SearchAndTabs extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           // Tabs
-          Row(
-            children: [
-              for (final t in tabs) ...[
-                TabChip(
+          SizedBox(
+            height: 40, // adjust to your TabChip height
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.zero,
+              itemCount: tabs.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final t = tabs[index];
+                return TabChip(
                   label: t[1],
                   selected: selected == t[0],
                   onTap: () => onTabChanged(t[0]),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ],
-          ),
+                );
+              },
+            ),
+          )
         ],
       ),
     );

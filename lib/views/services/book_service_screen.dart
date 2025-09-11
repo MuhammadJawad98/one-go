@@ -29,10 +29,28 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
   // Month cursors
   late final DateTime _minMonthStart; // first day of *current* month
   late DateTime _cursorMonthStart; // first day of the month being shown
+  var days = {
+    "monday":"",
+    "tuesday":"",
+    "wednesday":"",
+    "thursday":"",
+    "friday":"",
+    "saturday":"",
+    "sunday":"",
+  };
 
   @override
   void initState() {
     super.initState();
+    var openingHours = widget.service.operatingHours;
+    days['monday'] = openingHours.monday.open.isEmpty && openingHours.monday.close.isEmpty ? 'closed' : 'open';
+    days['tuesday'] = openingHours.tuesday.open.isEmpty && openingHours.tuesday.close.isEmpty ? 'closed' : 'open';
+    days['wednesday'] = openingHours.wednesday.open.isEmpty && openingHours.wednesday.close.isEmpty ? 'closed' : 'open';
+    days['thursday'] = openingHours.thursday.open.isEmpty && openingHours.thursday.close.isEmpty ? 'closed' : 'open';
+    days['friday'] = openingHours.friday.open.isEmpty && openingHours.friday.close.isEmpty ? 'closed' : 'open';
+    days['saturday'] = openingHours.saturday.open.isEmpty && openingHours.saturday.close.isEmpty ? 'closed' : 'open';
+    days['sunday'] = openingHours.sunday.open.isEmpty && openingHours.sunday.close.isEmpty ? 'closed' : 'open';
+
     final now = DateTime.now();
     _minMonthStart = DateTime(now.year, now.month, 1);
     _cursorMonthStart = _minMonthStart;
@@ -41,6 +59,7 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
   }
 
   // ----------------- PUBLIC API -----------------
+
   void loadHardcodedTimeSlots() {
     const raw = [
       [10, 12],
@@ -146,6 +165,9 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
     dates.clear();
     for (int d = startDay; d <= lastDay; d++) {
       final dt = DateTime(monthStart.year, monthStart.month, d);
+      if (days[HelperFunctions.getDateTimeString(dt.toString(), format: 'EEEE').toLowerCase()] == 'closed'){
+        continue;
+      }
       dates.add(_toSelection(dt));
     }
 

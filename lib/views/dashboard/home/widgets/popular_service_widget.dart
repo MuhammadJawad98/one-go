@@ -71,7 +71,7 @@ class FeatureSelectionWidget extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withAlpha(90),
+                      color: AppColors.blackColor.withAlpha(90),
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12),
