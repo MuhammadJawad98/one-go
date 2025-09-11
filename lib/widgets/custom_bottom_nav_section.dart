@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../utils/app_colors.dart';
@@ -28,7 +30,13 @@ class CustomBottomNavSection extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(child: CustomButton(text: text, onPressed: onTap)),
+      child: SafeArea(
+        top: false,
+        left: false,
+        right: false,
+        bottom: Platform.isIOS ? false : true,
+        child: CustomButton(text: text, onPressed: onTap),
+      ),
     );
   }
 }

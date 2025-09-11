@@ -1,3 +1,4 @@
+import 'package:car_wash_app/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/order_model.dart';
@@ -102,45 +103,45 @@ class OrderCardWidget extends StatelessWidget {
                   // status chip + actions
                   Row(
                     children: [
-                      StatusChip(text: vm.status, color: statusColor),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: onView,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: AppColors.primaryColor,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          child: CustomText(
-                            text: 'View',
-                            color: AppColors.whiteColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      if (onCancel != null)
-                        SizedBox(
-                          height: 40,
-                          child: OutlinedButton(
-                            onPressed: onCancel,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.redAccent,
-                              side: const BorderSide(color: Colors.redAccent),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                              ),
-                            ),
-                            child: const Text('Cancel'),
-                          ),
-                        ),
+                      StatusChip(text: HelperFunctions.capitalizeFirstLetter(vm.status), color: statusColor),
+                      // const Spacer(),
+                      // GestureDetector(
+                      //   onTap: onView,
+                      //   child: Container(
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(20),
+                      //       color: AppColors.primaryColor,
+                      //     ),
+                      //     padding: EdgeInsets.symmetric(
+                      //       horizontal: 12,
+                      //       vertical: 6,
+                      //     ),
+                      //     child: CustomText(
+                      //       text: 'View',
+                      //       color: AppColors.whiteColor,
+                      //       fontSize: 12,
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(width: 8),
+                      // if (onCancel != null)
+                      //   SizedBox(
+                      //     height: 40,
+                      //     child: OutlinedButton(
+                      //       onPressed: onCancel,
+                      //       style: OutlinedButton.styleFrom(
+                      //         foregroundColor: Colors.redAccent,
+                      //         side: const BorderSide(color: Colors.redAccent),
+                      //         shape: RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.circular(10),
+                      //         ),
+                      //         padding: const EdgeInsets.symmetric(
+                      //           horizontal: 14,
+                      //         ),
+                      //       ),
+                      //       child: const Text('Cancel'),
+                      //     ),
+                      //   ),
                     ],
                   ),
                 ],
@@ -155,8 +156,8 @@ class OrderCardWidget extends StatelessWidget {
   /// status color rule
   Color _statusColor(String s) {
     final v = s.toLowerCase();
-    if (v == 'confirmed') return Colors.teal;
-    if (v == 'cancelled') return Colors.redAccent;
-    return AppColors.primaryColor; // upcoming / default
+    if (v == 'confirmed') return AppColors.greenAppColor;
+    if (v == 'cancelled') return AppColors.redAppColor;
+    return AppColors.greyColor; // upcoming / default
   }
 }

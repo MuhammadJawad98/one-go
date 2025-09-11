@@ -1,3 +1,4 @@
+import 'package:car_wash_app/utils/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../widgets/custom_text.dart';
@@ -20,8 +21,8 @@ class StatusChip extends StatelessWidget {
       child: CustomText(
         text: text,
         fontSize: 12,
-        fontWeight: FontWeight.w700,
-        color: color,
+        fontWeight: FontWeight.w400,
+        color: AppColors.blackColor,
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:car_wash_app/utils/print_log.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,46 +56,112 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
     _minMonthStart = DateTime(now.year, now.month, 1);
     _cursorMonthStart = _minMonthStart;
     _populateMonth(_cursorMonthStart);
-    loadHardcodedTimeSlots();
+    // loadHardcodedTimeSlots();
   }
 
   // ----------------- PUBLIC API -----------------
 
-  void loadHardcodedTimeSlots() {
-    const raw = [
-      [10, 12],
-      [12, 14],
-      [14, 16],
-      [16, 18],
-      [18, 20],
-      [20, 22],
-    ];
+  TimeOfDay? _parseHHmm(String s) {
+    final parts = s.trim().split(':');
+    if (parts.length != 2) return null;
+    final h = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    if (h == null || m == null) return null;
+    return TimeOfDay(hour: h, minute: m);
+  }
 
-    time = raw.map((pair) {
-      final start = TimeOfDay(hour: pair[0], minute: 0);
-      final end = TimeOfDay(hour: pair[1], minute: 0);
-      final label = '${_fmt(start)} - ${_fmt(end)}';
-      final idVal = '${_two(pair[0])}-${_two(pair[1])}';
+  // --- helpers ---
+  int _toMinutes(TimeOfDay t) => t.hour * 60 + t.minute;
+  TimeOfDay _fromMinutes(int m) => TimeOfDay(hour: m ~/ 60, minute: m % 60);
+  String _fmt(TimeOfDay t) =>
+      '${t.hour.toString().padLeft(2,'0')}:${t.minute.toString().padLeft(2,'0')}';
 
-      return SelectionObject(
-        id: idVal,
-        title: label,
-        // e.g. "10:00 - 12:00"
-        value: idVal,
-        // e.g. "10-12"
-        isActive: true,
-        data: {
-          'start': start,
-          'end': end,
-        }, // keep the TimeOfDay range for API/use
+// Build slots like 09:00–11:00, 11:00–13:00, ...
+  List<SelectionObject> buildSlotsFromTOD(
+      TimeOfDay open,
+      TimeOfDay close, {
+        int intervalMinutes = 120, // 2 hours
+      }) {
+    final startMin = _toMinutes(open);
+    final endMin = _toMinutes(close);
+    if (endMin <= startMin) return [];
+
+    final out = <SelectionObject>[];
+    for (int s = startMin; s + intervalMinutes <= endMin; s += intervalMinutes) {
+      final st = _fromMinutes(s);
+      final en = _fromMinutes(s + intervalMinutes);
+
+      final id = '${st.hour.toString().padLeft(2,'0')}-'
+          '${en.hour.toString().padLeft(2,'0')}';
+
+      out.add(
+        SelectionObject(
+          id: id,
+          title: '${_fmt(st)} - ${_fmt(en)}', // e.g., 09:00 - 11:00
+          value: id,
+          isActive: true,
+          data: {'start': st, 'end': en},
+        ),
       );
-    }).toList();
-    time[0].isSelected = true;
+    }
+    return out;
+  }
+
+  void loadTimeSlotBasedOnDay() {
+    SelectionObject selectedDate = dates.firstWhere((e)=>e.isSelected);
+    dynamic open  = const TimeOfDay(hour: 9,  minute: 0);
+    dynamic close = const TimeOfDay(hour: 17, minute: 0);
+    var day = HelperFunctions.getDateTimeString(selectedDate.value,format: 'EEEE').toLowerCase();
+    PrintLogs.printLog("day: $day");
+    if(day == 'monday'){
+       var mondayOpen  = _parseHHmm(widget.service.operatingHours.monday.open);
+       var mondayClose = _parseHHmm(widget.service.operatingHours.monday.close);
+       if(open== null || close == null)  return;
+       open = mondayOpen!;
+       close = mondayClose!;
+    }else if(day == 'tuesday'){
+      var mondayOpen  = _parseHHmm(widget.service.operatingHours.tuesday.open);
+      var mondayClose = _parseHHmm(widget.service.operatingHours.tuesday.close);
+      if(open== null || close == null)  return;
+      open = mondayOpen!;
+      close = mondayClose!;
+    }else if(day == 'wednesday'){
+      var mondayOpen  = _parseHHmm(widget.service.operatingHours.wednesday.open);
+      var mondayClose = _parseHHmm(widget.service.operatingHours.wednesday.close);
+      if(open== null || close == null)  return;
+      open = mondayOpen!;
+      close = mondayClose!;
+    }else if(day == 'thursday'){
+      var mondayOpen  = _parseHHmm(widget.service.operatingHours.thursday.open);
+      var mondayClose = _parseHHmm(widget.service.operatingHours.thursday.close);
+      if(open== null || close == null)  return;
+      open = mondayOpen!;
+      close = mondayClose!;
+    }else if(day == 'friday'){
+      var mondayOpen  = _parseHHmm(widget.service.operatingHours.friday.open);
+      var mondayClose = _parseHHmm(widget.service.operatingHours.friday.close);
+      if(open== null || close == null)  return;
+      open = mondayOpen!;
+      close = mondayClose!;
+    }else if(day == 'saturday'){
+      var mondayOpen  = _parseHHmm(widget.service.operatingHours.saturday.open);
+      var mondayClose = _parseHHmm(widget.service.operatingHours.saturday.close);
+      if(open== null || close == null)  return;
+      open = mondayOpen!;
+      close = mondayClose!;
+    }else if(day == 'sunday'){
+      var mondayOpen  = _parseHHmm(widget.service.operatingHours.sunday.open);
+      var mondayClose = _parseHHmm(widget.service.operatingHours.sunday.close);
+      if(open== null || close == null)  return;
+      open = mondayOpen!;
+      close = mondayClose!;
+    }
+    time = buildSlotsFromTOD(open, close, intervalMinutes: 120);
+    if (time.isNotEmpty) time[0].isSelected = true;
     setState(() {});
   }
 
   // --- tiny helpers ---
-  String _fmt(TimeOfDay t) => '${_two(t.hour)}:${_two(t.minute)}';
 
   String _two(int n) => n.toString().padLeft(2, '0');
 
@@ -174,6 +241,7 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
     currentSelectedMonth = _formatMonthYear(monthStart);
     dates[0].isSelected = true;
     setState(() {});
+    loadTimeSlotBasedOnDay();
   }
 
   SelectionObject _toSelection(DateTime dt) {
@@ -285,9 +353,9 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
               children: [
                 Expanded(
                   child: CustomText(
-                    text: 'Select Date',
+                    text: 'Select Date:',
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 GestureDetector(
@@ -331,7 +399,9 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
-                            color: AppColors.primaryColor,
+                            color: dates[index].isSelected
+                                ? AppColors.primaryColor
+                                : AppColors.greyColor,
                             width: 0.5,
                           ),
                         ),
@@ -370,7 +440,7 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
             CustomText(
               text: 'Select Time',
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
             SizedBox(height: 16),
             Wrap(
@@ -410,7 +480,7 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
             CustomText(
               text: 'Note (Optional)',
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
             SizedBox(height: 16),
             RoundedTextField(
@@ -438,7 +508,8 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
       e.isSelected = false;
     }
     dates[index].isSelected = true;
-    setState(() {});
+
+    loadTimeSlotBasedOnDay();
   }
 
   void onTimeSelection(int index) {
