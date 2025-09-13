@@ -183,7 +183,7 @@ class AboutSection extends StatelessWidget {
             text: title,
             fontSize: 12,
             fontWeight: FontWeight.w400,
-            color: AppColors.primaryColor.withAlpha(100),
+            color: AppColors.primaryColor,
           ),
         ],
       ),

@@ -11,6 +11,7 @@ class OrderModel {
   String branchPhone = '';
   String businessName = '';
   String createdAt = '';
+  String cancellationReason = '';
 
   OrderModel();
 
@@ -27,6 +28,7 @@ class OrderModel {
     branchPhone = json['branchPhone']?.toString() ?? '';
     businessName = json['businessName']?.toString() ?? '';
     createdAt = json['createdAt']?.toString() ?? '';
+    cancellationReason = json['cancellationReason']?.toString() ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +45,7 @@ class OrderModel {
       'branchPhone': branchPhone,
       'businessName': businessName,
       'createdAt': createdAt,
+      'cancellationReason': cancellationReason,
     };
   }
 }

@@ -54,7 +54,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const CustomText(text: 'My Orders'),
+            title: CustomText(text: 'My Orders'),
             elevation: 0,
           ),
           body: Column(
@@ -93,7 +93,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       itemBuilder: (_, i) {
         final vm = items[i];
-        return OrderCardWidget(vm: vm, onView: () {}, onCancel: null);
+        return OrderCardWidget(vm: vm);
       },
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemCount: items.length + (p.isLoadingMore ? 1 : 0),
@@ -116,7 +116,7 @@ class _FiltersBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = const ['All', 'Pending', 'Confirmed'];
+    final items = const ['All', 'Pending', 'Confirmed', 'Cancelled'];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),

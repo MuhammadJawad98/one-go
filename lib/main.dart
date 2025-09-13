@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
             useMaterial3: false,
             scaffoldBackgroundColor: AppColors.whiteColor,
             floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: AppColors.primaryColor,foregroundColor: AppColors.whiteColor),
-            appBarTheme: AppBarTheme(color: AppColors.primaryColor),
+            appBarTheme: AppBarTheme(color: AppColors.primaryColor,elevation: 0),
             fontFamily: Provider.of<LanguageProvider>(context).selectedIndex == 1 ? 'ArbFONTS': 'Poppins',
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.android: ZoomPageTransitionsBuilder(),

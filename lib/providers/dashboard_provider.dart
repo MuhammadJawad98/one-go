@@ -444,10 +444,10 @@ class DashboardProvider extends ChangeNotifier {
     bool reset = false,
     bool fromHomeScreen = false,
   }) async {
-    if (isLoading) return;
-    isLoading = true;
-
-    try {
+    // if (isLoading) return;
+    // isLoading = true;
+    //
+    // try {
       if (reset) {
         currentPage = 1;
         hasMore = true;
@@ -531,15 +531,15 @@ class DashboardProvider extends ChangeNotifier {
       } else {
         HelperFunctions.handleApiMessages(response);
       }
-    } catch (e) {
-      AppAlerts.showSnackBar(
-        'An error occurred: ${e.toString()}',
-        statusCode: 1,
-      );
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+    // } catch (e) {
+    //   AppAlerts.showSnackBar(
+    //     'An error occurred: ${e.toString()}',
+    //     statusCode: 1,
+    //   );
+    // } finally {
+    //   isLoading = false;
+    //   notifyListeners();
+    // }
   }
 
   void onCategorySelection(int index) {
@@ -630,6 +630,7 @@ class DashboardProvider extends ChangeNotifier {
       BuildContext context, {
         String? search,
         String? citySlug,
+        String? categorySlug,
         String? minPrice,
         String? maxPrice,
         bool reset = false,
@@ -651,6 +652,7 @@ class DashboardProvider extends ChangeNotifier {
           // 'sortBy': 'latest',
           if (search != null && search.trim().isNotEmpty) 'search' : search.trim(),
           if (citySlug != null && citySlug.trim().isNotEmpty) 'citySlug' : citySlug.trim(),
+          if (categorySlug != null && categorySlug.trim().isNotEmpty) 'categorySlug' : categorySlug.trim(),
           if (minPrice != null) 'minPrice' : minPrice.trim(),
           if (maxPrice != null) 'maxPrice' : maxPrice.trim(),
         },

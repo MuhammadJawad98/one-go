@@ -8,10 +8,12 @@ import 'package:provider/provider.dart';
 import '../../providers/dashboard_provider.dart';
 import '../../utils/app_assets.dart';
 import '../../widgets/custom_back_button.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text.dart';
 
 class ServicesScreen extends StatefulWidget {
-  const ServicesScreen({super.key});
+  final bool isAlreadyHavingFilters;
+  const ServicesScreen({super.key,this.isAlreadyHavingFilters = false});
 
   @override
   State<ServicesScreen> createState() => _ServicesScreenState();
@@ -23,10 +25,9 @@ class _ServicesScreenState extends State<ServicesScreen> {
     // TODO: implement initState
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DashboardProvider>(
-        context,
-        listen: false,
-      ).fetchServices(context);
+      if(!widget.isAlreadyHavingFilters){
+        Provider.of<DashboardProvider>(context, listen: false,).fetchServices(context);
+      }
     });
   }
 
@@ -69,7 +70,19 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   child: provider.isServicesLoading
                       ? Center(child: CustomLoader())
                       : provider.servicesList.isEmpty
-                      ? Center(child: CustomText(text: 'No Data Found!'))
+                      ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(text: 'No Data Found!'),
+                          SizedBox(height: 12),
+                          SizedBox(
+                              width: 200,
+                              child: CustomButton(text: 'Tap to Refresh', onPressed: (){
+                                provider.fetchServices(context);
+                              }))
+                        ],
+                      )
                       : GridView.builder(
                           padding: EdgeInsets.only(bottom: 50),
                           gridDelegate:

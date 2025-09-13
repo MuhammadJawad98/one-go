@@ -39,7 +39,7 @@ class CustomFeatureTile extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.greyColor.withAlpha(100),
+              color: AppColors.lightGreyColor,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: iconSize),

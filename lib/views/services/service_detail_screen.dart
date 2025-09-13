@@ -121,7 +121,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                                       color: AppColors.screenBgColor,
                                     ),
                                     child: CustomText(
-                                      text: provider.serviceDetail.tags[index],
+                                      text: HelperFunctions.capitalizeFirstLetter(provider.serviceDetail.tags[index]),
                                       fontSize: 12,
                                       color: AppColors.primaryColor,
                                     ),
@@ -332,6 +332,16 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
+              const SizedBox(height: 4),
+              Row(children: [
+                Icon(Icons.check_circle,color: AppColors.greenColor,size: 14),
+                SizedBox(width: 5),
+                CustomText(
+                  text: 'VAT Included',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ],)
             ],
           ),
         ),

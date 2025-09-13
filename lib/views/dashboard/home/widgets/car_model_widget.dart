@@ -8,10 +8,10 @@ import '../../../../models/car_model.dart';
 import '../../../../routes/app_navigation.dart';
 import '../../../../utils/app_colors.dart';
 
-class FeatureSelectionWidget extends StatelessWidget {
+class CarModelWidget extends StatelessWidget {
   final CarsModel obj;
 
-  const FeatureSelectionWidget({super.key, required this.obj});
+  const CarModelWidget({super.key, required this.obj});
 
   @override
   Widget build(BuildContext context) {

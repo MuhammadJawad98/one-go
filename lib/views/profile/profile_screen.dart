@@ -1,15 +1,13 @@
-import 'package:car_wash_app/models/selection_object.dart';
-import 'package:car_wash_app/routes/app_navigation.dart';
-import 'package:car_wash_app/views/profile/widgets/profile_image_widget.dart';
-import 'package:car_wash_app/widgets/custom_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../providers/auth_provider.dart';
+import '../../views/profile/widgets/profile_image_widget.dart';
 import '../../providers/dashboard_provider.dart';
+import '../../models/selection_object.dart';
+import '../../providers/auth_provider.dart';
+import '../../routes/app_navigation.dart';
+import '../../widgets/custom_text.dart';
 import '../../utils/app_assets.dart';
 import '../../utils/app_colors.dart';
-import '../../widgets/custom_text.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -50,21 +48,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 SafeArea(
-                  child: Row(
-                    children: [
-                      CustomImageButton(onTap: () {}),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: CustomText(
-                            text: 'Profile',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 30),
-                    ],
+                  child: Center(
+                    child: CustomText(
+                      text: 'Profile',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
                 SizedBox(height: 12),
@@ -80,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(height: 28),
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.zero,
+                    padding: EdgeInsets.only(bottom: 40),
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -90,12 +79,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               AppNavigation.navigateToYourProfile(context);
                             } else if (options[index].id == '2') {
                               AppNavigation.navigateToManageAddress(context);
-                            }else if (options[index].id == '4') {
+                            } else if (options[index].id == '4') {
                               AppNavigation.navigateToOrdersListScreen(context);
-                            }else if (options[index].id == '5') {
-                              AppNavigation.navigateToCarListingsScreen(context);
-                            }else if (options[index].id == '10') {
-                              Provider.of<AuthProvider>(context,listen: false).logout(context);
+                            } else if (options[index].id == '5') {
+                              AppNavigation.navigateToCarListingsScreen(
+                                context,
+                              );
+                            } else if (options[index].id == '10') {
+                              Provider.of<AuthProvider>(
+                                context,
+                                listen: false,
+                              ).logout(context);
                             }
                           },
                           child: Row(

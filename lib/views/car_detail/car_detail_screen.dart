@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/models/car_model.dart';
 import 'package:car_wash_app/providers/dashboard_provider.dart';
 import 'package:car_wash_app/routes/app_navigation.dart';
+import 'package:car_wash_app/views/dashboard/home/widgets/whats_included_section.dart';
 import 'package:car_wash_app/widgets/riyal_price_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,16 +33,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   final PageController _pageController = PageController();
   final ScrollController _tabScrollController = ScrollController();
 
-  final List<String> items = ['Overview', 'Features', 'Car Details'];
+  final List<String> items = ['Overview', 'Features', 'Car Details', 'What\'s Included'];
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DashboardProvider>(
-        context,
-        listen: false,
-      ).fetchCarDetails(context, widget.obj);
+      Provider.of<DashboardProvider>(context, listen: false).fetchCarDetails(context, widget.obj);
     });
 
     // Add listener to auto-scroll tabs when page changes
@@ -62,14 +60,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       final double itemWidth = MediaQuery.of(context).size.width / items.length;
       final double screenWidth = MediaQuery.of(context).size.width;
-      final double scrollPosition =
-          (index * itemWidth) - (screenWidth / 2) + (itemWidth / 2);
+      final double scrollPosition = (index * itemWidth) - (screenWidth / 2) + (itemWidth / 2);
 
       _tabScrollController.animateTo(
-        scrollPosition.clamp(
-          0.0,
-          _tabScrollController.position.maxScrollExtent,
-        ),
+        scrollPosition.clamp(0.0, _tabScrollController.position.maxScrollExtent),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -91,8 +85,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
-                    vertical: 12,
-                  ),
+                    vertical: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -171,6 +164,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                             CarsDetailSection(
                               carDetailsModel: provider.carDetailsModel,
                             ),
+                            WhatsIncludedSection(),
                           ],
                         ),
                       ),

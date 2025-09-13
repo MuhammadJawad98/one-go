@@ -1,4 +1,6 @@
+import 'package:car_wash_app/widgets/riyal_price_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/selection_object.dart';
@@ -20,7 +22,9 @@ class ServiceFilterBottomSheetContent extends StatefulWidget {
 class _ServiceFilterBottomSheetContentState
     extends State<ServiceFilterBottomSheetContent> {
   final TextEditingController _searchController = TextEditingController();
-  RangeValues _priceRange = const RangeValues(1, 1000);
+  final TextEditingController _minPriceController = TextEditingController();
+  final TextEditingController _maxPriceController = TextEditingController();
+
   SelectionObject? _selectedCategory;
   SelectionObject? _selectedCity;
   bool _featuredOnly = false;
@@ -34,6 +38,14 @@ class _ServiceFilterBottomSheetContentState
       // provider.fetchCategories(context);
       // provider.fetchCities(context);
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+    super.dispose();
   }
 
   @override
@@ -102,43 +114,84 @@ class _ServiceFilterBottomSheetContentState
                       const SizedBox(height: 16),
 
                       // Price Range
-                      const CustomText(
-                        text: 'Price Range (SAR)',
-                        fontWeight: FontWeight.bold,
-                      ),
-                      const SizedBox(height: 8),
-                      RangeSlider(
-                        values: _priceRange,
-                        min: 1,
-                        max: 5000,
-                        divisions: 50,
-                        activeColor: AppColors.primaryColor,
-                        inactiveColor: AppColors.greyColor,
-                        labels: RangeLabels(
-                          'SAR ${_priceRange.start.round()}',
-                          'SAR ${_priceRange.end.round()}',
-                        ),
-                        onChanged: (RangeValues values) {
-                          setState(() {
-                            _priceRange = values;
-                          });
-                        },
-                      ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomText(
-                            text: 'SAR ${_priceRange.start.round()}',
-                            fontSize: 12,
-                            color: AppColors.greyColor,
+                          const CustomText(
+                            text: 'Price Range',
+                            fontWeight: FontWeight.bold,
                           ),
-                          CustomText(
-                            text: 'SAR ${_priceRange.end.round()}',
-                            fontSize: 12,
-                            color: AppColors.greyColor,
+                          SizedBox(width: 8),
+                          const CustomText(
+                            text: '( ',
+                            fontWeight: FontWeight.bold,
+                          ),
+                          RiyalPriceWidget(child: SizedBox()),
+                          const CustomText(
+                            text: ')',
+                            fontWeight: FontWeight.bold,
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          // MIN
+                          Expanded(
+                            child: RoundedTextField(
+                              hintText: 'Min',
+                              controller: _minPriceController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            )
+                          ),
+                          const SizedBox(width: 12),
+                          // MAX
+                          Expanded(
+                            child: RoundedTextField(
+                              hintText: 'Max',
+                              controller: _maxPriceController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            )
+                          ),
+                        ],
+                      ),
+                      // RangeSlider(
+                      //   values: _priceRange,
+                      //   min: 1,
+                      //   max: 5000,
+                      //   divisions: 50,
+                      //   activeColor: AppColors.primaryColor,
+                      //   inactiveColor: AppColors.greyColor,
+                      //   labels: RangeLabels(
+                      //     'SAR ${_priceRange.start.round()}',
+                      //     'SAR ${_priceRange.end.round()}',
+                      //   ),
+                      //   onChanged: (RangeValues values) {
+                      //     setState(() {
+                      //       _priceRange = values;
+                      //     });
+                      //   },
+                      // ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     CustomText(
+                      //       text: 'SAR ${_priceRange.start.round()}',
+                      //       fontSize: 12,
+                      //       color: AppColors.greyColor,
+                      //     ),
+                      //     CustomText(
+                      //       text: 'SAR ${_priceRange.end.round()}',
+                      //       fontSize: 12,
+                      //       color: AppColors.greyColor,
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(height: 16),
 
                       // Featured Services Toggle
@@ -238,8 +291,8 @@ class _ServiceFilterBottomSheetContentState
       context,
       search: _searchController.text.trim(),
       citySlug: _selectedCity?.value,
-      minPrice: _priceRange.start.round().toString(),
-      maxPrice: _priceRange.end.round().toString(),
+      minPrice: _minPriceController.text.trim(),
+      maxPrice: _maxPriceController.text.trim(),
       // isFeatured: _featuredOnly ? 'true' : null,
       reset: true,
     );

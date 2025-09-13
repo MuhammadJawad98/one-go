@@ -1,3 +1,4 @@
+import 'package:car_wash_app/models/order_model.dart';
 import 'package:car_wash_app/models/service_detail_model.dart';
 import 'package:car_wash_app/models/services_model.dart';
 import 'package:car_wash_app/views/services/service_detail_screen.dart';
@@ -20,6 +21,7 @@ import '../views/my_cars/cars_listing_screen.dart';
 import '../views/onboarding_screens/onboarding_screen.dart';
 import '../views/onboarding_screens/welcome_screen.dart';
 import '../views/orders/my_orders_screen.dart';
+import '../views/orders/order_detail_screen.dart';
 import '../views/profile/views/manage_address.dart';
 import '../views/profile/views/your_profile.dart';
 import '../views/profile_screens/complete_your_profile_screen.dart';
@@ -94,8 +96,8 @@ class AppNavigation{
   static void navigateToSearchedItemsScreen(BuildContext context){
       Navigator.push(context, MaterialPageRoute(builder: (context) =>  SearchedCarsScreen()));
   }
-  static void navigateToServicesScreen(BuildContext context){
-    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ServicesScreen()));
+  static void navigateToServicesScreen(BuildContext context,{bool hasFilters = false}){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ServicesScreen(isAlreadyHavingFilters: hasFilters)));
   }
   static void navigateToServiceDetailsScreen(BuildContext context,ServiceModel serviceId){
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  ServiceDetailScreen(obj: serviceId)));
@@ -108,6 +110,9 @@ class AppNavigation{
   }
   static void navigateToCarListingsScreen(BuildContext context){
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  MyCarsScreen()));
+  }
+  static void navigateToOrderDetailScreen(BuildContext context,OrderModel order){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  OrderDetailScreen(order: order)));
   }
   //
   // static void navigateToCustomImageViewer(BuildContext context,List<String> imagesList){

@@ -13,7 +13,8 @@ import '../../../widgets/custom_text.dart';
 
 class ProfileImageWidget extends StatefulWidget {
   final bool fromProfile;
-  const ProfileImageWidget({super.key,this.fromProfile= false});
+
+  const ProfileImageWidget({super.key, this.fromProfile = false});
 
   @override
   State<ProfileImageWidget> createState() => _ProfileImageWidgetState();
@@ -37,12 +38,15 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
                 ),
                 child: provider.userModel.profilePictureUrl.isNotEmpty
                     ? CachedNetworkImage(
-                  imageUrl: provider.userModel.profilePictureUrl,
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
-                )
-                    : Image.asset(AppAssets.person),
+                        imageUrl: provider.userModel.profilePictureUrl,
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        AppAssets.person,
+                        color: AppColors.primaryColor,
+                      ),
               ),
               Positioned(
                 right: 0,
@@ -75,28 +79,40 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
           child: Wrap(
             children: [
               ListTile(
-                leading:
-                Icon(Icons.camera_alt, color: isDarkMode ? AppColors.whiteColor : AppColors.primaryColor),
+                leading: Icon(
+                  Icons.camera_alt,
+                  color: isDarkMode
+                      ? AppColors.whiteColor
+                      : AppColors.primaryColor,
+                ),
                 title: CustomText(text: 'Take Photo'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final pickedFile =
-                  await ImagePicker().pickImage(source: ImageSource.camera);
+                  final pickedFile = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                  );
                   if (pickedFile != null) {
                     final file = File(pickedFile.path);
-                    Provider.of<DashboardProvider>(contxt, listen: false).uploadUserPic(contxt, file,fromProfile: widget.fromProfile);
+                    Provider.of<DashboardProvider>(contxt, listen: false,).uploadUserPic(contxt, file, fromProfile: widget.fromProfile);
                   }
                 },
               ),
               ListTile(
-                leading: Icon(Icons.image, color: isDarkMode ? AppColors.whiteColor : AppColors.primaryColor),
+                leading: Icon(
+                  Icons.image,
+                  color: isDarkMode
+                      ? AppColors.whiteColor
+                      : AppColors.primaryColor,
+                ),
                 title: CustomText(text: 'Choose From Gallery'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+                  final pickedFile = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
                   if (pickedFile != null) {
                     final file = File(pickedFile.path);
-                    Provider.of<DashboardProvider>(contxt, listen: false).uploadUserPic(contxt, file,fromProfile: widget.fromProfile);
+                    Provider.of<DashboardProvider>(contxt, listen: false,).uploadUserPic(contxt, file, fromProfile: widget.fromProfile);
                   }
                 },
               ),
@@ -106,5 +122,4 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
       },
     );
   }
-
 }

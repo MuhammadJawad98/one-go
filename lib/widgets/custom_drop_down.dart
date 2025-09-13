@@ -58,8 +58,8 @@ class _CustomDropDownState extends State<CustomDropDown> {
         controller: _tfController,
         hintText: widget.hintText ?? getTranslated(context, AppStrings.selectAnOption),
         enabled: false,
-        hintStyle: const TextStyle(color: AppColors.primaryColor),
-        textStyle: const TextStyle(color: AppColors.primaryColor),
+        hintStyle: const TextStyle(color: AppColors.blackColor),
+        textStyle: const TextStyle(color: AppColors.blackColor),
         sufixIcon: const Icon(Icons.arrow_drop_down),
       ),
       onTap: () async {

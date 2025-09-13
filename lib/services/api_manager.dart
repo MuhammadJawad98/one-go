@@ -120,12 +120,12 @@ class ApiManager {
         body: jsonEncode(data),
       );
 
-      if (response.statusCode == 200) {
+      // if (response.statusCode == 200) {
         PrintLogs.printLog(response.body);
         return json.decode(response.body);
-      } else {
-        throw ApiException(response.statusCode, 'Failed to update resource');
-      }
+      // } else {
+      //   throw ApiException(response.statusCode, 'Failed to update resource');
+      // }
     } catch (e) {
       if (e is SocketException) {
         PrintLogs.printLog("No internet connection");

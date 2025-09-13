@@ -1,5 +1,7 @@
 import 'package:car_wash_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/selection_object.dart';
@@ -8,6 +10,7 @@ import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/custom_text.dart';
 import '../../../widgets/custom_text_field.dart';
+import '../../../widgets/riyal_price_widget.dart';
 
 class FilterBottomSheetContent extends StatefulWidget {
   const FilterBottomSheetContent({super.key});
@@ -19,39 +22,73 @@ class FilterBottomSheetContent extends StatefulWidget {
 
 class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
   final TextEditingController _searchController = TextEditingController();
-  RangeValues _priceRange = const RangeValues(5000, 15000);
+  final TextEditingController _minPriceController = TextEditingController();
+  final TextEditingController _maxPriceController = TextEditingController();
+  // RangeValues _priceRange = const RangeValues(5000, 15000);
   SelectionObject? _selectedCondition;
   SelectionObject? _selectedMake;
   SelectionObject? _selectedModel;
   SelectionObject? _selectedType;
-  SelectionObject? _selectedYear;
+  SelectionObject? _selectedFromYear;
+  SelectionObject? _selectedToYear;
   String? _minMileage;
   String? _maxMileage;
-  String? _keyword;
+  // String? _keyword;
 
+  List<SelectionObject> yearOptions = [];
   // Filter Options Data
   final List<SelectionObject> conditionOptions = [
     SelectionObject(id: '1', title: 'New',value: 'new', isSelected: false),
     SelectionObject(id: '2', title: 'Used',value: 'used', isSelected: false),
-    SelectionObject(id: '3', title: 'Certified',value: 'certified', isSelected: false),
+    // SelectionObject(id: '3', title: 'Certified',value: 'certified', isSelected: false),
   ];
 
 
   final List<SelectionObject> typeOptions = [
     SelectionObject(id: '1', title: 'All',value: 'all', isSelected: true),
-    SelectionObject(id: '2', title: 'SUV',value: 'sUV', isSelected: false),
+    SelectionObject(id: '2', title: 'SUV',value: 'suv', isSelected: false),
     SelectionObject(id: '3', title: 'Sedan',value: 'sedan', isSelected: false),
     SelectionObject(id: '4', title: 'Coupe',value: 'coupe', isSelected: false),
     SelectionObject(id: '5', title: 'Hatchback',value: 'hatchback', isSelected: false),
+    SelectionObject(id: '6', title: 'Convertible',value: 'convertible', isSelected: false),
+    SelectionObject(id: '7', title: 'Minivan',value: 'minivan', isSelected: false),
+    SelectionObject(id: '8', title: 'Pickup',value: 'pickup', isSelected: false),
+    SelectionObject(id: '9', title: 'Van',value: 'van', isSelected: false),
+    SelectionObject(id: '10', title: 'Wagon',value: 'wagon', isSelected: false),
+    SelectionObject(id: '11', title: 'other',value: 'other', isSelected: false),
   ];
 
-  final List<SelectionObject> yearOptions = [
-    SelectionObject(id: '1', title: 'All',value: 'all', isSelected: true),
-    SelectionObject(id: '2', title: '2023',value: '2023', isSelected: false),
-    SelectionObject(id: '3', title: '2022',value: '2022', isSelected: false),
-    SelectionObject(id: '4', title: '2021',value: '2021', isSelected: false),
-    SelectionObject(id: '5', title: '2020',value: '2020', isSelected: false),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_){
+      final int currentYear = DateTime.now().year;
+
+      yearOptions = [
+        // SelectionObject(id: '0', title: 'All', value: 'all', isSelected: true),
+        ...List.generate(
+          currentYear - 1990 + 1,
+              (index) {
+            final year = currentYear - index;
+            return SelectionObject(
+              id: (index + 1).toString(),
+              title: year.toString(),
+              value: year.toString(),
+              isSelected: false,
+            );
+          },
+        ),
+      ];
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +144,10 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
                         'Select Makes',
                         provider.makes,
                         value: _selectedMake,
-                        onChanged: (value) =>
-                            setState(() => _selectedMake = value),
+                        onChanged: (value){
+                          setState(() => _selectedMake = value);
+                          provider.fetchModels(context, _selectedMake!.id);
+                        }
                       ),
                       _buildFilterDropdown(
                         'Select Models',
@@ -124,12 +163,25 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
                         onChanged: (value) =>
                             setState(() => _selectedType = value),
                       ),
-                      _buildFilterDropdown(
-                        'Year',
-                        yearOptions,
-                        value: _selectedYear,
-                        onChanged: (value) =>
-                            setState(() => _selectedYear = value),
+                      Row(
+                        children: [
+                          Expanded(child: _buildFilterDropdown(
+                            'From Year',
+                            yearOptions,
+                            value: _selectedFromYear,
+                            onChanged: (value) =>
+                                setState(() => _selectedFromYear = value),
+                          )),
+                          const SizedBox(width: 16),
+                          Expanded(child: _buildFilterDropdown(
+                            'To Year',
+                            yearOptions,
+                            value: _selectedToYear,
+                            onChanged: (value) =>
+                                setState(() => _selectedToYear = value),
+                          )),
+
+                        ],
                       ),
 
                       // Mileage Range
@@ -148,25 +200,53 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
                       const SizedBox(height: 16),
 
                       // Price Range
-                      const CustomText(
-                          text: 'Price', fontWeight: FontWeight.bold),
-                      RangeSlider(
-                        values: _priceRange,
-                        min: 0,
-                        max: 50000,
-                        divisions: 10,
-                        activeColor: AppColors.primaryColor,
-                        inactiveColor: AppColors.greyColor,
-                        labels: RangeLabels(
-                          'SAR ${_priceRange.start.round()}',
-                          'SAR ${_priceRange.end.round()}',
-                        ),
-                        onChanged: (RangeValues values) {
-                          setState(() {
-                            _priceRange = values;
-                          });
-                        },
+                      Row(
+                        children: [
+                          const CustomText(
+                            text: 'Price Range',
+                            fontWeight: FontWeight.bold,
+                          ),
+                          SizedBox(width: 8),
+                          const CustomText(
+                            text: '( ',
+                            fontWeight: FontWeight.bold,
+                          ),
+                          RiyalPriceWidget(child: SizedBox()),
+                          const CustomText(
+                            text: ')',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          // MIN
+                          Expanded(
+                              child: RoundedTextField(
+                                hintText: 'Min',
+                                controller: _minPriceController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                              )
+                          ),
+                          const SizedBox(width: 12),
+                          // MAX
+                          Expanded(
+                              child: RoundedTextField(
+                                hintText: 'Max',
+                                controller: _maxPriceController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                              )
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
 
                       // Apply Button
                       SafeArea(
@@ -174,18 +254,20 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
                           text: 'APPLY FILTERS',
                           onPressed: () {
                             // You can use the filter values here before closing
-
+                            int? fromYear = _selectedFromYear!=null && _selectedFromYear?.value!=null ? (int.parse(_selectedFromYear!.value) < 1900 ? 1900 : int.parse(_selectedFromYear!.value)) : null;
+                            int? toYear = _selectedToYear!=null && _selectedFromYear?.value!=null ? (int.parse(_selectedFromYear!.value) < 1900 ? 1900 : int.parse(_selectedToYear!.value)) : null;
                             Provider.of<DashboardProvider>(context,listen: false).fetchCars(context,
                             keyword: _searchController.text.trim(),
                             conditionType: _selectedCondition?.value,
                             makeSlug: _selectedMake?.value,
                             modelSlug: _selectedModel?.value,
                             bodyType: _selectedType?.value,
-                            minYear: _selectedYear?.value,
+                            minYear: fromYear?.toString(),
+                            maxYear: toYear?.toString(),
                             minMileage: _minMileage,
                             maxMileage: _maxMileage,
-                            minPrice: _priceRange.start.round().toString(),
-                            maxPrice: _priceRange.end.round().toString(),
+                            minPrice: _minPriceController.text.trim(),
+                            maxPrice: _maxPriceController.text.trim(),
                             reset: true
                             );
                             Navigator.pop(context);
