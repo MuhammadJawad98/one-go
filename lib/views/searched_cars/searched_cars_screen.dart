@@ -5,6 +5,7 @@ import '../../providers/dashboard_provider.dart';
 import '../../utils/app_assets.dart';
 import '../../views/searched_cars/widgets/filter_bottom_sheet.dart';
 import '../../widgets/custom_back_button.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text.dart';
 import 'widgets/car_cards_widget.dart';
 
@@ -105,8 +106,19 @@ class _SearchedCarsScreenState extends State<SearchedCarsScreen> {
                 // Car List
                 Expanded(
                   child: provider.searchedCarsList.isEmpty
-                      ? Center(child: CustomText(text: 'No Data Found!'))
-                      : GridView.builder(
+                      ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomText(text: 'No Data Found!'),
+                      SizedBox(height: 12),
+                      SizedBox(
+                          width: 200,
+                          child: CustomButton(text: 'Tap to Refresh', onPressed: (){
+                            provider.fetchCars(context);
+                          }))
+                    ],
+                  ) : GridView.builder(
                           padding: EdgeInsets.zero,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(

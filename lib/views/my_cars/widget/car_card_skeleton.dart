@@ -17,14 +17,14 @@ class CarCardSkeleton extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 6,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFFEEEEEE),
-              borderRadius: BorderRadius.horizontal(left: Radius.circular(16)),
-            ),
-          ),
+          // Container(
+          //   width: 6,
+          //   height: double.infinity,
+          //   decoration: const BoxDecoration(
+          //     color: Color(0xFFEEEEEE),
+          //     borderRadius: BorderRadius.horizontal(left: Radius.circular(16)),
+          //   ),
+          // ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),

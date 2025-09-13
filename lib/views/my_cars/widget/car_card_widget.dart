@@ -1,3 +1,4 @@
+import 'package:car_wash_app/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:car_wash_app/models/car_listing_model.dart';
 import 'package:car_wash_app/utils/app_colors.dart';
@@ -12,128 +13,120 @@ class CarCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = model.isFeatured
-        ? Colors.amber
-        : AppColors.primaryColor;
+    final statusColor = _statusColor(model.status);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
+    return GestureDetector(
       onTap: onTap,
-      child: Ink(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Colors.black12),
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x0F000000),
-              blurRadius: 14,
+              color: Color(0x15000000),
+              blurRadius: 12,
               offset: Offset(0, 6),
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // left accent
-            Container(
-              width: 6,
-              height: 140,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(16),
+            // 🚘 Car Image with overlay
+            Stack(
+              children: [
+                Container(
+                  height: 160,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  child: model.imageUrl.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                          child: Image.network(
+                            model.imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.image,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
                 ),
-              ),
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: _statusChip(model.status, statusColor),
+                ),
+                if (model.isFeatured)
+                  Positioned(top: 10, right: 10, child: _featuredBadge()),
+              ],
             ),
 
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header: name + price
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: CustomText(
-                            text:
-                                '${model.makeName} ${model.modelName} (${model.year})',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
+            // Info Content
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Car Name + Price
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomText(
+                          text:
+                              "${model.makeName} ${model.modelName} ${model.year}",
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          maxLine: 1,
+                          textOverflow: TextOverflow.ellipsis,
                         ),
-                        RiyalPriceWidget(
-                          child: CustomText(
-                            text: model.listingPrice,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
+                      ),
+                      RiyalPriceWidget(
+                        child: CustomText(
+                          text: model.listingPrice,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.blackColor,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
 
-                    // specs row chips
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        if (model.transmission.isNotEmpty == true)
-                          _specChip(
-                            Icons.settings_ethernet,
-                            model.transmission,
-                          ),
-                        if (model.engineSize.isNotEmpty == true)
-                          _specChip(Icons.local_gas_station, model.engineSize),
-                        // if (model.noOfSeats > 0)
-                        _specChip(Icons.event_seat, '${model.noOfSeats} seats'),
-                        if (model.color.isNotEmpty == true)
-                          _specChip(Icons.color_lens, model.color),
-                        _specChip(Icons.speed, '${model.mileage} km'),
-                        _specChip(
-                          Icons.location_on_outlined,
-                          'City #${model.cityId}',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-
-                    // footer: status + featured badge (if any)
-                    Row(
-                      children: [
-                        _statusChip(model.status),
-                        const Spacer(),
-                        if (model.isFeatured)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.amber.withAlpha(15),
-                              border: Border.all(color: Colors.amber),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.star, size: 14, color: Colors.amber),
-                                SizedBox(width: 6),
-                                CustomText(
-                                  text: 'Featured',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.amber,
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
+                  // Specs Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _specItem(Icons.settings, model.transmission),
+                      _specItem(
+                        Icons.local_gas_station,
+                        "${model.engineSize}L",
+                      ),
+                      _specItem(Icons.event_seat, "${model.noOfSeats} Seats"),
+                      _specItem(Icons.speed, "${model.mileage} km"),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
@@ -142,48 +135,60 @@ class CarCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _specChip(IconData icon, String text) {
+  Widget _specItem(IconData icon, String value) {
+    if (value.isEmpty) return const SizedBox.shrink();
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.black54),
+        const SizedBox(width: 4),
+        CustomText(text: value, fontSize: 12, color: Colors.black87),
+      ],
+    );
+  }
+
+  Widget _statusChip(String status, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withAlpha(8),
-        border: Border.all(color: AppColors.primaryColor.withAlpha(25)),
-        borderRadius: BorderRadius.circular(999),
+        color: color.withAlpha(200),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Row(
+      child: CustomText(
+        text: status.isEmpty ? '—' : status,
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _featuredBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade700,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.primaryColor),
-          const SizedBox(width: 6),
+          Icon(Icons.star, size: 14, color: Colors.white),
+          SizedBox(width: 4),
           CustomText(
-            text: text,
+            text: "Featured",
             fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primaryColor,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ],
       ),
     );
   }
 
-  Widget _statusChip(String status) {
-    final lc = status.toLowerCase();
-    Color c = AppColors.primaryColor;
-    if (lc == 'new') c = Colors.teal;
-    if (lc == 'used') c = Colors.blueGrey;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: c.withAlpha(12),
-        border: Border.all(color: c.withAlpha(35)),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: CustomText(
-        text: status.isEmpty ? '—' : status,
-        fontSize: 12,
-        fontWeight: FontWeight.w700,
-        color: c,
-      ),
-    );
+  Color _statusColor(String status) {
+    final v = status.toLowerCase();
+    if (v == "new") return Colors.teal;
+    if (v == "used") return Colors.orange;
+    return AppColors.greyColor;
   }
 }

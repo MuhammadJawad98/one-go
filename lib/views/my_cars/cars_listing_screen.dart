@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../models/selection_object.dart';
 import '../../views/my_cars/widget/car_card_skeleton.dart';
 import '../../views/my_cars/widget/car_card_widget.dart';
 import '../../providers/car_listing_provider.dart';
@@ -66,12 +67,20 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                 child: RefreshIndicator(
                   onRefresh: () => p.refreshMyCars(context),
                   child: p.isInitialLoading && cars.isEmpty
-                      ? const CarCardSkeleton()
+                      ? ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                          itemBuilder: (context, index) =>
+                              const CarCardSkeleton(),
+                          itemCount: 5,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 10);
+                          },
+                        )
                       : cars.isEmpty
                       ? const CustomEmptyView()
                       : ListView.separated(
                           controller: _scrollCtrl,
-                          padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
                           itemBuilder: (_, i) {
                             if (i >= cars.length) {
                               return const CarCardSkeleton();
@@ -113,11 +122,11 @@ class _SearchAndTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = const [
-      ['all', 'All Cars'],
-      ['draft', 'Draft'],
-      ['published', 'Published'],
-      ['underReview', 'Under Review'],
+    final List<SelectionObject> tabs = [
+      SelectionObject(value: 'all', title: 'All Cars'),
+      SelectionObject(value: 'new', title: 'Draft'),
+      SelectionObject(value: 'published', title: 'Published'),
+      SelectionObject(value: 'review_requested', title: 'Under Review'),
     ];
 
     return Padding(
@@ -154,13 +163,13 @@ class _SearchAndTabs extends StatelessWidget {
               itemBuilder: (context, index) {
                 final t = tabs[index];
                 return TabChip(
-                  label: t[1],
-                  selected: selected == t[0],
-                  onTap: () => onTabChanged(t[0]),
+                  label: t.title,
+                  selected: selected == t.value,
+                  onTap: () => onTabChanged(t.value),
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );

@@ -1,3 +1,5 @@
+import '../utils/api_endpoint.dart';
+
 class CarListingModel {
   String id = '';
   String year = '';
@@ -18,6 +20,7 @@ class CarListingModel {
   String publishedOn = '';
   String createdAt = '';
   String updatedAt = '';
+  String imageUrl = '';
 
   CarListingModel();
 
@@ -37,6 +40,10 @@ class CarListingModel {
     color = json['color']?.toString() ?? '';
     cityId = json['cityId']?.toString() ?? '';
     listingPrice = json['listingPrice']?.toString() ?? '';
+    imageUrl = json['mainImageUrl']?.toString() ?? '';
+    if(imageUrl.isNotEmpty){
+      imageUrl = "${ApiEndpoint.imageBaseUrl}$imageUrl";
+    }
     if (json['isFeatured'] is bool) {
       isFeatured = json['isFeatured'];
     }

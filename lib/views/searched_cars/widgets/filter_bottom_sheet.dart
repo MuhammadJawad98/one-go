@@ -1,11 +1,13 @@
 import 'package:car_wash_app/providers/dashboard_provider.dart';
+import 'package:car_wash_app/utils/app_alerts.dart';
+import 'package:car_wash_app/utils/app_colors.dart';
+import 'package:car_wash_app/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/selection_object.dart';
-import '../../../utils/app_colors.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_drop_down.dart';
 import '../../../widgets/custom_text.dart';
@@ -36,6 +38,20 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
   // String? _keyword;
 
   List<SelectionObject> yearOptions = [];
+
+  final List<SelectionObject> fuelTypes = [
+    SelectionObject(title: "Petrol"),
+    SelectionObject(title: "Diesel"),
+    SelectionObject(title: "Hybrid"),
+    SelectionObject(title: "Electric"),
+  ];
+
+  ///transmission
+  List<SelectionObject> transmissionOptions = [
+    SelectionObject(title: "Automatic"),
+    SelectionObject(title: "Manual"),
+  ];
+
   // Filter Options Data
   final List<SelectionObject> conditionOptions = [
     SelectionObject(id: '1', title: 'New',value: 'new', isSelected: false),
@@ -246,32 +262,72 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 16),
+                      const CustomText(
+                        text: 'Fuel Type',
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: List.generate(fuelTypes.length, (index) {
+                          final option = fuelTypes[index];
+                          return FilterChip(
+                            label: CustomText(
+                              text: option.title,
+                              color: option.isSelected ? Colors.white : Colors.black,
+                            ),
+                            selected: option.isSelected,
+                            selectedColor: AppColors.primaryColor,
+                            backgroundColor: Colors.grey.shade200,
+                            checkmarkColor: Colors.white,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                option.isSelected = selected;
+                              });
+                            },
+                          );
+                        }),
+                      ),
+
+                      const SizedBox(height: 16),
+                      const CustomText(
+                        text: 'Transmission',
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: List.generate(transmissionOptions.length, (index) {
+                          final option = transmissionOptions[index];
+                          return FilterChip(
+                            label: CustomText(
+                              text: option.title,
+                              color: option.isSelected ? Colors.white : Colors.black,
+                            ),
+                            selected: option.isSelected,
+                            selectedColor: AppColors.primaryColor,
+                            backgroundColor: Colors.grey.shade200,
+                            checkmarkColor: Colors.white,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                option.isSelected = selected;
+                              });
+                            },
+                          );
+                        }),
+                      ),
+
+                      ///submit button
                       const SizedBox(height: 20),
 
                       // Apply Button
                       SafeArea(
                         child: CustomButton(
                           text: 'APPLY FILTERS',
-                          onPressed: () {
-                            // You can use the filter values here before closing
-                            int? fromYear = _selectedFromYear!=null && _selectedFromYear?.value!=null ? (int.parse(_selectedFromYear!.value) < 1900 ? 1900 : int.parse(_selectedFromYear!.value)) : null;
-                            int? toYear = _selectedToYear!=null && _selectedFromYear?.value!=null ? (int.parse(_selectedFromYear!.value) < 1900 ? 1900 : int.parse(_selectedToYear!.value)) : null;
-                            Provider.of<DashboardProvider>(context,listen: false).fetchCars(context,
-                            keyword: _searchController.text.trim(),
-                            conditionType: _selectedCondition?.value,
-                            makeSlug: _selectedMake?.value,
-                            modelSlug: _selectedModel?.value,
-                            bodyType: _selectedType?.value,
-                            minYear: fromYear?.toString(),
-                            maxYear: toYear?.toString(),
-                            minMileage: _minMileage,
-                            maxMileage: _maxMileage,
-                            minPrice: _minPriceController.text.trim(),
-                            maxPrice: _maxPriceController.text.trim(),
-                            reset: true
-                            );
-                            Navigator.pop(context);
-                          },
+                          onPressed: applyFilter,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -309,5 +365,68 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
         ],
       ),
     );
+  }
+  void applyFilter() {
+
+      final minText = _minPriceController.text.trim();
+      final maxText = _maxPriceController.text.trim();
+
+      int? minPrice;
+      int? maxPrice;
+
+      if (minText.isNotEmpty) {
+        try {
+          minPrice = int.parse(minText);
+          if (minPrice < 0) {
+            AppAlerts.showCustomPopupAlert(context: context, title: AppStrings.appName, text: "Minimum price cannot be negative",yesBtnText: 'Ok', onTapConfirm: () {});
+            return;
+          }
+          if (minPrice > 9223372036854775807) { // 2^63 - 1
+            AppAlerts.showCustomPopupAlert(context: context, title: AppStrings.appName, text: "Minimum price too large",yesBtnText: 'Ok', onTapConfirm: () {});
+            return;
+          }
+        } catch (e) {
+          AppAlerts.showCustomPopupAlert(context: context, title: AppStrings.appName, text: "Invalid minimum price",yesBtnText: 'Ok', onTapConfirm: () {});
+          return;
+        }
+      }
+
+      if (maxText.isNotEmpty) {
+        try {
+          maxPrice = int.parse(maxText);
+          if (maxPrice < 0) {
+            AppAlerts.showCustomPopupAlert(context: context, title: AppStrings.appName, text: "Maximum price cannot be negative",yesBtnText: 'Ok', onTapConfirm: () {});
+            return;
+          }
+          if (maxPrice > 9223372036854775807) {
+            AppAlerts.showCustomPopupAlert(context: context, title: AppStrings.appName, text: "Maximum price too large",yesBtnText: 'Ok', onTapConfirm: () {});
+            return;
+          }
+        } catch (e) {
+          AppAlerts.showCustomPopupAlert(context: context, title: AppStrings.appName, text: "Invalid maximum price",yesBtnText: 'Ok', onTapConfirm: () {});
+          return;
+        }
+      }
+
+      // You can use the filter values here before closing
+      int? fromYear = _selectedFromYear!=null && _selectedFromYear?.value!=null ? (int.parse(_selectedFromYear!.value) < 1900 ? 1900 : int.parse(_selectedFromYear!.value)) : null;
+      int? toYear = _selectedToYear!=null && _selectedFromYear?.value!=null ? (int.parse(_selectedFromYear!.value) < 1900 ? 1900 : int.parse(_selectedToYear!.value)) : null;
+      Provider.of<DashboardProvider>(context,listen: false).fetchCars(context,
+          keyword: _searchController.text.trim(),
+          conditionType: _selectedCondition?.value,
+          makeSlug: _selectedMake?.value,
+          modelSlug: _selectedModel?.value,
+          bodyType: _selectedType?.value,
+          minYear: fromYear?.toString(),
+          maxYear: toYear?.toString(),
+          minMileage: _minMileage,
+          maxMileage: _maxMileage,
+          minPrice: _minPriceController.text.trim(),
+          maxPrice: _maxPriceController.text.trim(),
+          reset: true,
+          fuelTypes: fuelTypes,
+          transmissionType: transmissionOptions
+      );
+      Navigator.pop(context);
   }
 }

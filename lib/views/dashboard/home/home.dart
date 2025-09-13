@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               GestureDetector(
                                 onTap: (){
-                                  provider.fetchCars(context,reset: true);
+                                  provider.fetchCars(context);
                                   AppNavigation.navigateToSearchedItemsScreen(context);
                                 },
                                 child: CustomText(

@@ -412,9 +412,9 @@ class DashboardProvider extends ChangeNotifier {
     String? regionalSpecs,
     String? optionalLevel,
     String? bodyType,
-    String? transmission,
+    // String? transmission,
     String? driveType,
-    String? fuelType,
+    // String? fuelType,
     String? cylinders,
     String? overallCondition,
     String? accidentHistory,
@@ -443,11 +443,13 @@ class DashboardProvider extends ChangeNotifier {
     bool? isFeatured,
     bool reset = false,
     bool fromHomeScreen = false,
+    List<SelectionObject>? fuelTypes,
+    List<SelectionObject>? transmissionType,
   }) async {
-    // if (isLoading) return;
-    // isLoading = true;
-    //
-    // try {
+    if (isLoading) return;
+    isLoading = true;
+
+    try {
       if (reset) {
         currentPage = 1;
         hasMore = true;
@@ -457,47 +459,72 @@ class DashboardProvider extends ChangeNotifier {
       }
       searchedCarsList.clear();
 
-      final uri = Uri.parse(ApiEndpoint.carsSearch).replace(
-        queryParameters: {
-          'page': currentPage.toString(),
-          'limit': limit.toString(),
-          if (sortBy != null && sortBy.isNotEmpty) 'sortBy': sortBy,
-          if (sortOrder != null && sortOrder.isNotEmpty) 'sortOrder': sortOrder,
-          if (conditionType != null && conditionType.isNotEmpty) 'conditionType': conditionType,
-          if (regionalSpecs != null && regionalSpecs.isNotEmpty) 'regionalSpecs': regionalSpecs,
-          if (optionalLevel != null && optionalLevel.isNotEmpty) 'optionalLevel': optionalLevel,
-          if (bodyType != null && bodyType.isNotEmpty) 'bodyType': bodyType,
-          if (transmission != null && transmission.isNotEmpty) 'transmission': transmission,
-          if (driveType != null && driveType.isNotEmpty) 'driveType': driveType,
-          if (fuelType != null && fuelType.isNotEmpty) 'fuelType': fuelType,
-          if (cylinders != null && cylinders.isNotEmpty) 'cylinders': cylinders,
-          if (overallCondition != null && overallCondition.isNotEmpty) 'overallCondition': overallCondition,
-          if (accidentHistory != null && accidentHistory.isNotEmpty) 'accidentHistory': accidentHistory,
-          if (airBagsCondition != null && airBagsCondition.isNotEmpty) 'airBagsCondition': airBagsCondition,
-          if (chassisCondition != null && chassisCondition.isNotEmpty) 'chassisCondition': chassisCondition,
-          if (engineCondition != null && engineCondition.isNotEmpty) 'engineCondition': engineCondition,
-          if (gearBoxCondition != null && gearBoxCondition.isNotEmpty) 'gearBoxCondition': gearBoxCondition,
-          if (roofType != null && roofType.isNotEmpty) 'roofType': roofType,
-          if (color != null && color.isNotEmpty) 'color': color,
-          if (makeId != null && makeId.isNotEmpty) 'makeId': makeId,
-          if (makeSlug != null && makeSlug.isNotEmpty) 'makeSlug': makeSlug,
-          if (modelId != null && modelId.isNotEmpty) 'modelId': modelId,
-          if (modelSlug != null && modelSlug.isNotEmpty) 'modelSlug': modelSlug,
-          if (cityId != null && cityId.isNotEmpty) 'cityId': cityId,
-          if (citySlug != null && citySlug.isNotEmpty) 'citySlug': citySlug,
-          if (minPrice != null && minPrice.isNotEmpty) 'minPrice': minPrice,
-          if (maxPrice != null && maxPrice.isNotEmpty) 'maxPrice': maxPrice,
-          if (minMileage != null && minMileage.isNotEmpty) 'minMileage': minMileage,
-          if (maxMileage != null && maxMileage.isNotEmpty) 'maxMileage': maxMileage,
-          if (minYear != null && minYear.isNotEmpty) 'minYear': minYear,
-          if (maxYear != null && maxYear.isNotEmpty) 'maxYear': maxYear,
-          if (keywords != null && keywords.isNotEmpty) 'keywords': keywords,
-          if (keyword != null && keyword.isNotEmpty) 'keyword': keyword,
-          if (isFeatured != null) 'isFeatured': isFeatured.toString(),
-        },
-      );
+      final queryParams = <String, String>{};
 
-      final response = await ApiManager.get(uri.toString());
+// your existing single-value params
+    queryParams.addAll({
+      'page': currentPage.toString(),
+      'limit': limit.toString(),
+      if (sortBy != null && sortBy.isNotEmpty) 'sortBy': sortBy,
+      if (sortOrder != null && sortOrder.isNotEmpty) 'sortOrder': sortOrder,
+      if (conditionType != null && conditionType.isNotEmpty) 'conditionType': conditionType,
+      if (regionalSpecs != null && regionalSpecs.isNotEmpty) 'regionalSpecs': regionalSpecs,
+      if (optionalLevel != null && optionalLevel.isNotEmpty) 'optionalLevel': optionalLevel,
+      if (bodyType != null && bodyType.isNotEmpty) 'bodyType': bodyType,
+      if (driveType != null && driveType.isNotEmpty) 'driveType': driveType,
+      if (cylinders != null && cylinders.isNotEmpty) 'cylinders': cylinders,
+      if (overallCondition != null && overallCondition.isNotEmpty) 'overallCondition': overallCondition,
+      if (accidentHistory != null && accidentHistory.isNotEmpty) 'accidentHistory': accidentHistory,
+      if (airBagsCondition != null && airBagsCondition.isNotEmpty) 'airBagsCondition': airBagsCondition,
+      if (chassisCondition != null && chassisCondition.isNotEmpty) 'chassisCondition': chassisCondition,
+      if (engineCondition != null && engineCondition.isNotEmpty) 'engineCondition': engineCondition,
+      if (gearBoxCondition != null && gearBoxCondition.isNotEmpty) 'gearBoxCondition': gearBoxCondition,
+      if (roofType != null && roofType.isNotEmpty) 'roofType': roofType,
+      if (color != null && color.isNotEmpty) 'color': color,
+      if (makeId != null && makeId.isNotEmpty) 'makeId': makeId,
+      if (makeSlug != null && makeSlug.isNotEmpty) 'makeSlug': makeSlug,
+      if (modelId != null && modelId.isNotEmpty) 'modelId': modelId,
+      if (modelSlug != null && modelSlug.isNotEmpty) 'modelSlug': modelSlug,
+      if (cityId != null && cityId.isNotEmpty) 'cityId': cityId,
+      if (citySlug != null && citySlug.isNotEmpty) 'citySlug': citySlug,
+      if (minPrice != null && minPrice.isNotEmpty) 'minPrice': minPrice,
+      if (maxPrice != null && maxPrice.isNotEmpty) 'maxPrice': maxPrice,
+      if (minMileage != null && minMileage.isNotEmpty) 'minMileage': minMileage,
+      if (maxMileage != null && maxMileage.isNotEmpty) 'maxMileage': maxMileage,
+      if (minYear != null && minYear.isNotEmpty) 'minYear': minYear,
+      if (maxYear != null && maxYear.isNotEmpty) 'maxYear': maxYear,
+      if (keywords != null && keywords.isNotEmpty) 'keywords': keywords,
+      if (keyword != null && keyword.isNotEmpty) 'keyword': keyword,
+      if (isFeatured != null) 'isFeatured': isFeatured.toString(),
+    });
+
+// build query manually
+    final queryBuffer = StringBuffer();
+
+    queryParams.forEach((key, value) {
+      queryBuffer.write('${Uri.encodeQueryComponent(key)}=${Uri.encodeQueryComponent(value)}&');
+    });
+
+// add multi-select fuel types
+    if (fuelTypes != null) {
+      for (final f in fuelTypes.where((e) => e.isSelected)) {
+        queryBuffer.write('fuelType=${Uri.encodeQueryComponent(f.title.toLowerCase())}&');
+      }
+    }
+
+// add multi-select transmission types
+    if (transmissionType != null) {
+      for (final t in transmissionType.where((e) => e.isSelected)) {
+        queryBuffer.write('transmission=${Uri.encodeQueryComponent(t.title.toLowerCase())}&');
+      }
+    }
+
+// remove last &
+    final queryString = queryBuffer.toString().replaceAll(RegExp(r'&$'), '');
+
+    final uri = Uri.parse('${ApiEndpoint.carsSearch}?$queryString');
+
+    final response = await ApiManager.get(uri.toString());
 
       if (response['status'] == true &&
           response['data'] is Map &&
@@ -531,15 +558,15 @@ class DashboardProvider extends ChangeNotifier {
       } else {
         HelperFunctions.handleApiMessages(response);
       }
-    // } catch (e) {
-    //   AppAlerts.showSnackBar(
-    //     'An error occurred: ${e.toString()}',
-    //     statusCode: 1,
-    //   );
-    // } finally {
-    //   isLoading = false;
-    //   notifyListeners();
-    // }
+    } catch (e) {
+      AppAlerts.showSnackBar(
+        'An error occurred: ${e.toString()}',
+        statusCode: 1,
+      );
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   void onCategorySelection(int index) {

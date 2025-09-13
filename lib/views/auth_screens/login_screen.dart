@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(12),
+                LengthLimitingTextInputFormatter(9),
               ],
             ),
             SizedBox(height: 20),
