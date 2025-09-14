@@ -1,3 +1,4 @@
+import 'package:car_wash_app/routes/app_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/selection_object.dart';
@@ -23,7 +24,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CarListingProvider>().fetchMyCars(context);
+      context.read<CarListingProvider>().fetchMyCars();
     });
 
     _scrollCtrl.addListener(() {
@@ -32,7 +33,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               _scrollCtrl.position.maxScrollExtent - 200 &&
           !p.isLoadingMore &&
           p.hasMore) {
-        p.fetchMoreMyCars(context);
+        p.fetchMoreMyCars();
       }
     });
   }
@@ -65,7 +66,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               ),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: () => p.refreshMyCars(context),
+                  onRefresh: () => p.refreshMyCars(),
                   child: p.isInitialLoading && cars.isEmpty
                       ? ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
@@ -97,7 +98,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {},
+            onPressed: ()=> AppNavigation.navigateToCreateMyCar(context),
             child: Icon(Icons.add),
           ),
         );

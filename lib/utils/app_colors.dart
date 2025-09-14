@@ -38,7 +38,7 @@ class AppColors{
   static const Color homeScreenBoxLightColor = Color(0XFFEAECFF);
   static const Color homeScreenBoxDarkColor = Color(0XFF8699EC);
   static const Color buttonBlueColor = Color(0XFF2E70E8);
-  static const Color yellowAppColor = Color(0XFFF79009);
+  static const Color yellowAppColor = Colors.amber;
   static const Color redAppColor = Color(0XFFF04438);
   static const Color greenAppColor = Color(0XFF17B26A);
   static const Color customDividerColor = Color(0XFFE2E8F0);

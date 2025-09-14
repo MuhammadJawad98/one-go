@@ -1,6 +1,7 @@
 import 'package:car_wash_app/models/order_model.dart';
 import 'package:car_wash_app/models/service_detail_model.dart';
 import 'package:car_wash_app/models/services_model.dart';
+import 'package:car_wash_app/views/car_registering/car_register_screen.dart';
 import 'package:car_wash_app/views/services/service_detail_screen.dart';
 import 'package:car_wash_app/views/services/services_screen.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +114,9 @@ class AppNavigation{
   }
   static void navigateToOrderDetailScreen(BuildContext context,OrderModel order){
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  OrderDetailScreen(order: order)));
+  }
+  static void navigateToCreateMyCar(BuildContext context){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateCarScreen()));
   }
   //
   // static void navigateToCustomImageViewer(BuildContext context,List<String> imagesList){

@@ -30,7 +30,7 @@ class CarListingProvider extends ChangeNotifier {
   String _query = '';
 
   // fetch first page
-  Future<void> fetchMyCars([BuildContext? context]) async {
+  Future<void> fetchMyCars() async {
     if (_isInitialLoading) return;
     _isInitialLoading = true;
     _resetPaging();
@@ -47,7 +47,7 @@ class CarListingProvider extends ChangeNotifier {
   }
 
   // fetch next page
-  Future<void> fetchMoreMyCars([BuildContext? context]) async {
+  Future<void> fetchMoreMyCars() async {
     if (_isInitialLoading || _isPageLoading || !_hasMore) return;
     _isPageLoading = true;
     notifyListeners();
@@ -63,8 +63,8 @@ class CarListingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> refreshMyCars([BuildContext? context]) async {
-    await fetchMyCars(context);
+  Future<void> refreshMyCars() async {
+    await fetchMyCars();
   }
 
   // filters

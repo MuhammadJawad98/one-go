@@ -284,19 +284,19 @@ class HelperFunctions {
   //   }
   // }
 
-  // static Future<dynamic> pickMulitipleImage() async {
-  //   List<XFile> imageFiles = [];
-  //   try {
-  //     imageFiles = await ImagePicker().pickMultiImage(imageQuality: 50);
-  //     if (imageFiles.isNotEmpty) {
-  //       return imageFiles;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     PrintLogs.printMessgae(e);
-  //   }
-  // }
+  static Future<dynamic> pickMulitipleImage() async {
+    List<XFile> imageFiles = [];
+    try {
+      imageFiles = await ImagePicker().pickMultiImage(imageQuality: 50);
+      if (imageFiles.isNotEmpty) {
+        return imageFiles;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      PrintLogs.printMessage(e);
+    }
+  }
   //
   // static Future<DateTimeRange?> showDataRangePicker(
   //     BuildContext context) async {

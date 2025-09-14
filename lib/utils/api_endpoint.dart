@@ -18,6 +18,18 @@ class ApiEndpoint{
   static String customerOrders =  'customer/orders';
   static String customerCars =  'customer/cars';
 
+  ///customer car register endpoints
+  static String basic =  'basic';
+  static String details =  'details';
+  static String features =  'features';
+  static String documents =  'documents';
+  static String pricing =  'pricing';
+  ///api/v1/customer/cars/basic
+  ////api/v1/customer/cars/{id}/details
+  ///api/v1/customer/cars/{id}/features
+  ////api/v1/customer/cars/{id}/documents
+  ///api/v1/customer/cars/{id}/pricing
+
   static String register =  'register';
   static String logout =  'logout';
 
