@@ -18,53 +18,101 @@ class CarCard extends StatelessWidget {
     return Hero(
       tag: '${obj.modelName}_${obj.id}',
       child: Material(
-        child: GestureDetector(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
           onTap: () {
             AppNavigation.navigateToServiceDetailScreen(context, obj);
           },
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.greyColor),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Featured badge
-                // Car image
-                Stack(
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.greyColor),
+                  color: Colors.white,
+                ),
+                child: Row(
                   children: [
+                    // Car image
                     _buildCarImage(),
-                    if (obj.isFeatured)
-                      Positioned(top: 10, left: 10, child: _buildFeaturedBadge()),
+                    const SizedBox(width: 12),
+
+                    // Expanded Details
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Price
+                          RiyalPriceWidget(
+                            child: CustomText(
+                              text: obj.listingPrice,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+
+                          // Car Name / Make
+                          CustomText(
+                            text: obj.makeName,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            maxLine: 1,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+
+                          // Model Name
+                          if (obj.modelName.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            CustomText(
+                              text: obj.modelName,
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                              maxLine: 1,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+
+                          // Year & Mileage Example
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  size: 14, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              CustomText(
+                                text: obj.year,
+                                fontSize: 12,
+                                color: Colors.grey[700],
+                              ),
+                              const SizedBox(width: 12),
+                              const Icon(Icons.speed,
+                                  size: 14, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              CustomText(
+                                text: '${obj.mileage} Mileage',
+                                fontSize: 12,
+                                color: Colors.grey[700],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
+              ),
 
-                // Price
-                SizedBox(height: 8),
-                RiyalPriceWidget(
-                  child: CustomText(
-                    text: obj.listingPrice,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+              // FEATURED Badge → Top-right of the whole card
+              if (obj.isFeatured)
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: _buildFeaturedBadge(),
                 ),
-
-                // Title
-                SizedBox(height: 4),
-                CustomText(
-                  text: obj.makeName,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  maxLine: 2,
-                  textOverflow: TextOverflow.ellipsis,
-                ),
-
-                // Rating (if available)
-                // if (obj.averageRating != null) _buildRatingRow(),
-              ],
-            ),
+            ],
           ),
         ),
       ),
@@ -72,76 +120,48 @@ class CarCard extends StatelessWidget {
   }
 
   Widget _buildFeaturedBadge() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: AppColors.orangeColor,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: CustomText(
-          text: 'FEATURED',
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: AppColors.whiteColor,
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.orangeColor,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: CustomText(
+        text: 'FEATURED',
+        fontSize: 9,
+        fontWeight: FontWeight.bold,
+        color: AppColors.whiteColor,
       ),
     );
   }
 
   Widget _buildCarImage() {
-    return Center(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        width: double.infinity,
-        height: 100,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
-        ),
+        width: 110,
+        height: 80,
+        color: Colors.grey[200],
         child: obj.mainImageUrl.isNotEmpty
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: obj.mainImageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  placeholder: (context, url) => const Center(
-                    child: CupertinoActivityIndicator(
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.info, color: AppColors.greyColor),
-                ),
-              )
-            : const Icon(Icons.info, color: AppColors.greyColor),
+            ? CachedNetworkImage(
+          imageUrl: obj.mainImageUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => const Center(
+            child: CupertinoActivityIndicator(
+              color: AppColors.primaryColor,
+            ),
+          ),
+          errorWidget: (context, url, error) => const Icon(
+            Icons.directions_car,
+            color: AppColors.greyColor,
+          ),
+        )
+            : const Icon(
+          Icons.directions_car,
+          size: 40,
+          color: AppColors.greyColor,
+        ),
       ),
     );
   }
-
-  // Widget _buildRatingRow() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 4),
-  //     child: Row(
-  //       children: [
-  //         ...List.generate(5, (index) {
-  //           return Icon(
-  //             Icons.star,
-  //             size: 14,
-  //             color: index < obj.averageRating!.floor()
-  //                 ? Colors.amber
-  //                 : Colors.grey[300],
-  //           );
-  //         }),
-  //         CustomText(
-  //           text:
-  //               ' ${obj.averageRating}${obj.reviewCount != null ? ' (${obj.reviewCount})' : ''}',
-  //           fontSize: 12,
-  //           color: Colors.grey[600],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

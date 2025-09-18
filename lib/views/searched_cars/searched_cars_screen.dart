@@ -113,27 +113,25 @@ class _SearchedCarsScreenState extends State<SearchedCarsScreen> {
                       CustomText(text: 'No Data Found!'),
                       SizedBox(height: 12),
                       SizedBox(
-                          width: 200,
-                          child: CustomButton(text: 'Tap to Refresh', onPressed: (){
+                        width: 200,
+                        child: CustomButton(
+                          text: 'Tap to Refresh',
+                          onPressed: () {
                             provider.fetchCars(context);
-                          }))
-                    ],
-                  ) : GridView.builder(
-                          padding: EdgeInsets.zero,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.85,
-                                mainAxisSpacing: 16,
-                                crossAxisSpacing: 16,
-                              ),
-                          itemCount: provider.searchedCarsList.length,
-                          itemBuilder: (context, index) {
-                            return CarCard(
-                              obj: provider.searchedCarsList[index],
-                            );
                           },
                         ),
+                      ),
+                    ],
+                  ) : ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemCount: provider.searchedCarsList.length,
+                    separatorBuilder: (_, __) => SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      return CarCard(
+                        obj: provider.searchedCarsList[index],
+                      );
+                    },
+                  ),
                 ),
                 SizedBox(height: 24),
               ],
