@@ -40,6 +40,7 @@ class DashboardProvider extends ChangeNotifier {
   int totalCars = 0;
   int totalSearchedCars = 0;
   List<ServiceModel> servicesList = [];
+  List<ServiceModel> filterServicesList = [];
   List<Category> categories = [];
   List<SelectionObject> categoryList = [];
   List<SelectionObject> cities = [];
@@ -666,6 +667,7 @@ class DashboardProvider extends ChangeNotifier {
 
       }) async {
     servicesList.clear();
+    filterServicesList.clear();
     updateServicesLoader(true);
 
     try {
@@ -692,7 +694,9 @@ class DashboardProvider extends ChangeNotifier {
       if (response['status'] == true) {
         final data = response['data']?['data'];
         if (data is List) {
-          servicesList.addAll(data.map<ServiceModel>((e) => ServiceModel.fromJson(e)));
+          final services = data.map<ServiceModel>((e) => ServiceModel.fromJson(e)).toList();
+          servicesList.addAll(services);
+          filterServicesList.addAll(services);
         }
       } else {
         HelperFunctions.handleApiMessages(response);
@@ -702,6 +706,18 @@ class DashboardProvider extends ChangeNotifier {
     } finally {
       updateServicesLoader(false);
     }
+  }
+
+  void filterServicesLocally(String query) {
+    if (query.trim().isEmpty) {
+      filterServicesList = List.from(servicesList);
+    } else {
+      final lowerQuery = query.toLowerCase();
+      filterServicesList = servicesList.where((service) {
+        return service.name.toLowerCase().contains(lowerQuery);
+      }).toList();
+    }
+    notifyListeners(); // since you're using Provider
   }
 
 

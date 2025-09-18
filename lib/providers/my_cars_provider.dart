@@ -889,4 +889,13 @@ class MyCarsProvider extends ChangeNotifier {
       updateLoader(false);
     }
   }
+
+  void fetchCarDetails(id) async{
+   var response = await ApiManager.get('${ApiEndpoint.customerCars}/${carBasicModel.id}');
+   if (response['status'] == true && response['data'] is Map) {
+     ///model parsing
+   } else {
+     HelperFunctions.handleApiMessages(response);
+   }
+  }
 }

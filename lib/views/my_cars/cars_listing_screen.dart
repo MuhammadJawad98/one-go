@@ -1,4 +1,5 @@
 import 'package:car_wash_app/routes/app_navigation.dart';
+import 'package:car_wash_app/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/selection_object.dart';
@@ -29,8 +30,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
 
     _scrollCtrl.addListener(() {
       final p = context.read<CarListingProvider>();
-      if (_scrollCtrl.position.pixels >=
-              _scrollCtrl.position.maxScrollExtent - 200 &&
+      if (_scrollCtrl.position.pixels >= _scrollCtrl.position.maxScrollExtent - 200 &&
           !p.isLoadingMore &&
           p.hasMore) {
         p.fetchMoreMyCars();
@@ -70,8 +70,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                   child: p.isInitialLoading && cars.isEmpty
                       ? ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-                          itemBuilder: (context, index) =>
-                              const CarCardSkeleton(),
+                          itemBuilder: (context, index) => const CarCardSkeleton(),
                           itemCount: 5,
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox(height: 10);
@@ -87,7 +86,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                               return const CarCardSkeleton();
                             }
                             final c = cars[i];
-                            return CarCardWidget(model: c);
+                            return CarCardWidget(model: c,onTap: (){
+                              // AppNavigation.navigateToCarDetails(context, c.id);
+                            });
                           },
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 10),
@@ -148,7 +149,7 @@ class _SearchAndTabs extends StatelessWidget {
               decoration: const InputDecoration(
                 hintText: 'Search by make, model, or year…',
                 border: InputBorder.none,
-                icon: Icon(Icons.search),
+                icon: Icon(Icons.search,color: AppColors.greyColor),
               ),
             ),
           ),

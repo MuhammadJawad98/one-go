@@ -3,7 +3,6 @@ import 'package:car_wash_app/utils/app_assets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-
 import '../../../models/services_model.dart';
 import '../../../routes/app_navigation.dart';
 import '../../../utils/app_colors.dart';
@@ -20,73 +19,98 @@ class ServiceCardWidget extends StatelessWidget {
     return Hero(
       tag: '${obj.name}_${obj.id}',
       child: Material(
-        child: GestureDetector(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
           onTap: () {
             AppNavigation.navigateToServiceDetailsScreen(context, obj);
           },
           child: Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.greyColor),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.greyColor)
             ),
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Featured badge
-                // Car image
+                // Service Image
                 Stack(
                   children: [
                     _buildCarImage(),
-                    if (obj.isFeatured)
-                      Positioned(
-                        top: 10,
-                        left: 10,
-                        child: _buildFeaturedBadge(),
-                      ),
+                    if (obj.isFeatured) _buildFeaturedBadge(),
                   ],
                 ),
 
-                // Price
-                SizedBox(height: 4),
-                RiyalPriceWidget(
-                  child: CustomText(
-                    text: obj.price,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(width: 12),
+
+                // Details Section
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Service Title
+                      CustomText(
+                        text: obj.name,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        maxLine: 1,
+                        textOverflow: TextOverflow.ellipsis,
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      // Price
+                      RiyalPriceWidget(
+                        child: CustomText(
+                          text: obj.price,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.blackColor,
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      // Category
+                      Row(
+                        children: [
+                          Icon(Octicons.gear, size: 14, color: Colors.grey),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: CustomText(
+                              text: obj.categoryName,
+                              fontSize: 12,
+                              color: Colors.grey[700],
+                              maxLine: 1,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      // City
+                      Row(
+                        children: [
+                          Icon(Octicons.location, size: 14, color: Colors.grey),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: CustomText(
+                              text: obj.cityName,
+                              fontSize: 12,
+                              color: Colors.grey[700],
+                              maxLine: 1,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-
-                // Title
-                CustomText(
-                  text: obj.name,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  maxLine: 2,
-                  textOverflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 2),
-                Row(
-                  children: [
-                    Icon(Octicons.gear, size: 14),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: CustomText(text: obj.categoryName, fontSize: 12),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(Octicons.location, size: 14),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: CustomText(text: obj.cityName, fontSize: 12),
-                    ),
-                  ],
-                ),
-                // Rating (if available)
-                // if (obj.averageRating != null) _buildRatingRow(),
               ],
             ),
           ),
@@ -96,85 +120,48 @@ class ServiceCardWidget extends StatelessWidget {
   }
 
   Widget _buildFeaturedBadge() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+    return Positioned(
+      top: 6,
+      left: 6,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.orangeColor,
-          borderRadius: BorderRadius.circular(30),
+          gradient: LinearGradient(colors: [Colors.orange, Colors.deepOrange]),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: CustomText(
           text: 'FEATURED',
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: AppColors.whiteColor,
+          color: Colors.white,
         ),
       ),
     );
   }
 
   Widget _buildCarImage() {
-    return Center(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        width: double.infinity,
-        height: 100,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
-        ),
+        height: 90,
+        width: 90,
+        color: Colors.grey[200],
         child: obj.mainImageUrl.isNotEmpty
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: obj.mainImageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  placeholder: (context, url) => const Center(
-                    child: CupertinoActivityIndicator(
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Image.asset(
-                    AppAssets.carServicePlaceholder,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )
-            : ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  AppAssets.carServicePlaceholder,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              ),
+            ? CachedNetworkImage(
+          imageUrl: obj.mainImageUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) =>
+          const Center(child: CupertinoActivityIndicator()),
+          errorWidget: (context, url, error) => Image.asset(
+            AppAssets.carServicePlaceholder,
+            fit: BoxFit.cover,
+          ),
+        )
+            : Image.asset(
+          AppAssets.carServicePlaceholder,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
-
-  // Widget _buildRatingRow() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 4),
-  //     child: Row(
-  //       children: [
-  //         ...List.generate(5, (index) {
-  //           return Icon(
-  //             Icons.star,
-  //             size: 14,
-  //             color: index < obj.averageRating!.floor()
-  //                 ? Colors.amber
-  //                 : Colors.grey[300],
-  //           );
-  //         }),
-  //         CustomText(
-  //           text:
-  //               ' ${obj.averageRating}${obj.reviewCount != null ? ' (${obj.reviewCount})' : ''}',
-  //           fontSize: 12,
-  //           color: Colors.grey[600],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

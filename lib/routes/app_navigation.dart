@@ -18,6 +18,7 @@ import '../views/dashboard/dashboard_screen.dart';
 import '../views/location_screen/location_allow_screen.dart';
 import '../views/location_screen/manually_location_enter_screen.dart';
 import '../views/messages/messages_screen.dart';
+import '../views/my_cars/car_detail_screen.dart';
 import '../views/my_cars/cars_listing_screen.dart';
 import '../views/onboarding_screens/onboarding_screen.dart';
 import '../views/onboarding_screens/welcome_screen.dart';
@@ -118,7 +119,11 @@ class AppNavigation{
   static void navigateToCreateMyCar(BuildContext context){
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateCarScreen()));
   }
-  //
+
+  static void navigateToCarDetails(BuildContext context, String id) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyCarDetailScreen(id: id)));
+  }
+
   // static void navigateToCustomImageViewer(BuildContext context,List<String> imagesList){
   //   Navigator.push(context, MaterialPageRoute(builder: (context)=>  CustomImageViewer(imagesList: imagesList)));
   // }
