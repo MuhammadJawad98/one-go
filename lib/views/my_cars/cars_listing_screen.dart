@@ -67,6 +67,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () => p.refreshMyCars(),
+                  color: AppColors.primaryColor,
                   child: p.isInitialLoading && cars.isEmpty
                       ? ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),

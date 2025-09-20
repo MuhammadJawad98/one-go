@@ -20,6 +20,7 @@ class MyCarsProvider extends ChangeNotifier {
   bool hasAlloyRims = false;
   bool currentlyFinanced = false;
   bool firstOwner = false;
+  List<bool> stepsEdited = [false,false,false,false,false];
 
   List<SelectionObject> makeList = [];
   List<SelectionObject> modelList = [];
