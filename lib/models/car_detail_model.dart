@@ -97,6 +97,12 @@ class CarDetailsModel {
         }
       }
     }
+    if (json['make'] is Map) {
+      makeName = json['make']['name']?.toString() ?? '';
+    }
+    if (json['model'] is Map) {
+      modelName = json['model']['name']?.toString() ?? '';
+    }
   }
 
   /// To JSON
@@ -131,8 +137,8 @@ class CarDetailsModel {
       'adExpiry': adExpiry,
       'cylinders': cylinders,
       'viewCount': viewCount,
-      'details': details?.toJson(),
-      'features': features?.toJson(),
+      'details': details.toJson(),
+      'features': features.toJson(),
       'documents': documents.map((d) => d.toJson()).toList(),
     };
   }
@@ -174,7 +180,9 @@ class CarDetailInfo {
     chassisCondition = json['chassisCondition']?.toString() ?? '';
     engineCondition = json['engineCondition']?.toString() ?? '';
     gearBoxCondition = json['gearBoxCondition']?.toString() ?? '';
-    alloyRims = json['alloyRims'] ?? false;
+    if(json['alloyRims'] is bool){
+      alloyRims = json['alloyRims'];
+    }
     rimSize = json['rimSize']?.toString() ?? '';
     roofType = json['roofType']?.toString() ?? '';
     currentlyFinanced = json['currentlyFinanced'] ?? false;

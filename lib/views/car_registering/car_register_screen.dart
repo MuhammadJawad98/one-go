@@ -15,7 +15,8 @@ import 'sections/pricing_section.dart';
 import 'package:flutter/material.dart';
 
 class CreateCarScreen extends StatefulWidget {
-  const CreateCarScreen({super.key});
+  final String? id;
+  const CreateCarScreen({super.key, this.id});
 
   @override
   State<CreateCarScreen> createState() => _CreateCarScreenState();
@@ -60,11 +61,11 @@ class _CreateCarScreenState extends State<CreateCarScreen> {
   ];
 
   void _nextStep() async{
-    var provider = Provider.of<MyCarsProvider>(context,listen: false);
+    // var provider = Provider.of<MyCarsProvider>(context,listen: false);
     if (_currentStep < _steps.length - 1) {
-      if(_currentStep == 1){
-        provider.initFeatureList();
-      }
+      // if(_currentStep == 1){
+      //   provider.initFeatureList();
+      // }
 
       if(_currentStep == 0){
         var result = await Provider.of<MyCarsProvider>(context,listen: false).postCarBasic();
@@ -105,7 +106,11 @@ class _CreateCarScreenState extends State<CreateCarScreen> {
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      context.read<MyCarsProvider>().init(context);
+      if(widget.id!=null){
+        context.read<MyCarsProvider>().onEditCar(context, widget.id!);
+      }else{
+        context.read<MyCarsProvider>().init(context);
+      }
     });
   }
 

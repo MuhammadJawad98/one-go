@@ -116,8 +116,8 @@ class AppNavigation{
   static void navigateToOrderDetailScreen(BuildContext context,OrderModel order){
     Navigator.push(context, MaterialPageRoute(builder: (context) =>  OrderDetailScreen(order: order)));
   }
-  static void navigateToCreateMyCar(BuildContext context){
-    Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateCarScreen()));
+  static void navigateToCreateMyCar(BuildContext context,{String? id}){
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateCarScreen(id: id)));
   }
 
   static void navigateToCarDetails(BuildContext context, String id) {

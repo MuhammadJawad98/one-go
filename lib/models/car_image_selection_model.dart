@@ -6,6 +6,7 @@ class CarImagesSelectionModel{
   String localPath = '';
   SelectionObject imageType = SelectionObject();
   TextEditingController description = TextEditingController();
+  String imageUrl = '';
 
   Map<String, dynamic> toJson() {
     return {

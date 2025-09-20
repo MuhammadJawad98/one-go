@@ -87,7 +87,11 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                               return const CarCardSkeleton();
                             }
                             final c = cars[i];
-                            return CarCardWidget(model: c,onTap: (){
+                            return CarCardWidget(model: c,
+                                onEdit: (){
+                                  AppNavigation.navigateToCreateMyCar(context,id:c.id);
+                                },
+                                onTap: (){
                               // AppNavigation.navigateToCarDetails(context, c.id);
                             });
                           },

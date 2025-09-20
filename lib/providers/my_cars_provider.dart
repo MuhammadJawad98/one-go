@@ -4,6 +4,7 @@ import 'package:car_wash_app/models/car_basic_model.dart';
 import 'package:car_wash_app/models/selection_object.dart';
 import 'package:car_wash_app/providers/dashboard_provider.dart';
 import 'package:car_wash_app/utils/app_alerts.dart';
+import 'package:car_wash_app/utils/extensions.dart';
 import 'package:car_wash_app/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -197,7 +198,9 @@ class MyCarsProvider extends ChangeNotifier {
     for (var e in maintenanceModifications) {
       e.isSelected = false;
     }
+    stepsEdited = [false,false,false,false,false];
     carBasicModel = CarBasicModel();
+    initFeatureList();
   }
 
   void init(BuildContext context) {
@@ -547,26 +550,20 @@ class MyCarsProvider extends ChangeNotifier {
       };
       PrintLogs.printLog("body : $body");
       dynamic response;
-      if (carBasicModel.id.isNotEmpty) {
-        response = await ApiManager.update(
-          '${ApiEndpoint.customerCars}/${ApiEndpoint.basic}',
-          body,
-        );
+      if (stepsEdited[0]) {
+        response = await ApiManager.update('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.basic}', body);
       } else {
-        response = await ApiManager.post(
-          '${ApiEndpoint.customerCars}/${ApiEndpoint.basic}',
-          body,
-        );
+        response = await ApiManager.post('${ApiEndpoint.customerCars}/${ApiEndpoint.basic}', body);
       }
       PrintLogs.printLog("postCarBasic response: $response");
       if (response['status'] == true && response['data'] is Map) {
         carBasicModel = CarBasicModel.fromJson(response['data']);
         return true;
       } else {
-        carBasicModel = CarBasicModel();
+        // carBasicModel = CarBasicModel();
         HelperFunctions.handleApiMessages(response);
       }
-      return false;
+      return true;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       return false;
@@ -622,16 +619,10 @@ class MyCarsProvider extends ChangeNotifier {
         "specialAboutCar": specialAboutCar,
       };
       dynamic response;
-      if (isEdit) {
-        response = await ApiManager.update(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.details}',
-          body,
-        );
+      if (stepsEdited[1]) {
+        response = await ApiManager.update('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.details}', body);
       } else {
-        response = await ApiManager.post(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.details}',
-          body,
-        );
+        response = await ApiManager.post('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.details}', body);
       }
       PrintLogs.printLog("fetchCarDetails response: $response");
       if (response['status'] == true && response['data'] is Map) {
@@ -640,7 +631,7 @@ class MyCarsProvider extends ChangeNotifier {
       } else {
         HelperFunctions.handleApiMessages(response);
       }
-      return false;
+      return true;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       AppAlerts.showSnackBar(e.toString(), statusCode: 1);
@@ -668,66 +659,16 @@ class MyCarsProvider extends ChangeNotifier {
     updateLoader(true);
     try {
       Map<String, dynamic> body = {};
-      // Map<String, dynamic> body = {
-      //   "blindSpotMonitor": false,
-      //   "laneKeepAssist": false,
-      //   "preCollisionSystem": false,
-      //   "ledHeadlights": true,
-      //   "fogLights": true,
-      //   "brakeAssist": false,
-      //   "bluetooth": true,
-      //   "carplay": true,
-      //   "rearEntertainment": false,
-      //   "premiumSound": true,
-      //   "headsUpDisplay": false,
-      //   "parkingSensors": true,
-      //   "cruiseControl": true,
-      //   "navigationSystem": true,
-      //   "reversingCamera": true,
-      //   "birdsEyeCamera": false,
-      //   "digitalDisplayMirror": false,
-      //   "automatedParking": false,
-      //   "adaptiveCruiseControl": false,
-      //   "digitalDisplay": true,
-      //   "steeringControls": true,
-      //   "paddleShifters": false,
-      //   "autoDimmingMirror": true,
-      //   "leatherSeats": true,
-      //   "pushButtonStart": true,
-      //   "remoteStart": false,
-      //   "ambientLighting": true,
-      //   "keylessEntry": true,
-      //   "powerSeats": true,
-      //   "memorySeats": false,
-      //   "powerFoldingMirrors": true,
-      //   "softCloseDoor": false,
-      //   "electricRunningBoard": false,
-      //   "handsFreeLifgate": false,
-      //   "massageSeats": false,
-      //   "heatedCooledSeats": true,
-      //   "lumbarSupport": true,
-      //   "newBrakePads": false,
-      //   "agencyMaintained": true,
-      //   "specialModifications": false,
-      //   "newBattery": false,
-      //   "newTyres": true,
-      // };
 
       for (var element in selectedFeatureItems) {
         body[element.value] = true;
       }
 
       dynamic response;
-      if (isEdit) {
-        response = await ApiManager.update(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.features}',
-          body,
-        );
+      if (stepsEdited[2]) {
+        response = await ApiManager.update('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.features}', body);
       } else {
-        response = await ApiManager.post(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.features}',
-          body,
-        );
+        response = await ApiManager.post('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.features}', body);
       }
       PrintLogs.printLog("fetchCarDetails response: $response");
       if (response['status'] == true && response['data'] is Map) {
@@ -736,7 +677,7 @@ class MyCarsProvider extends ChangeNotifier {
       } else {
         HelperFunctions.handleApiMessages(response);
       }
-      return false;
+      return true;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       AppAlerts.showSnackBar(e.toString(), statusCode: 1);
@@ -828,16 +769,10 @@ class MyCarsProvider extends ChangeNotifier {
       }
       Map<String, dynamic> body = {"documents": list};
       dynamic response;
-      if (isEdit) {
-        response = await ApiManager.update(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.documents}',
-          body,
-        );
+      if (stepsEdited[3]) {
+        response = await ApiManager.update('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.documents}', body);
       } else {
-        response = await ApiManager.post(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.documents}',
-          body,
-        );
+        response = await ApiManager.post('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.documents}', body);
       }
 
       PrintLogs.printLog("fetchCarDetails response: $response");
@@ -846,7 +781,7 @@ class MyCarsProvider extends ChangeNotifier {
       }else{
         HelperFunctions.handleApiMessages(response);
       }
-      return false;
+      return true;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       AppAlerts.showSnackBar(e.toString(),statusCode: 1);
@@ -865,16 +800,10 @@ class MyCarsProvider extends ChangeNotifier {
         "isFeatured": isFeatureSelected,
       };
       dynamic response;
-      if (isEdit) {
-        response = await ApiManager.update(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.pricing}',
-          body,
-        );
+      if (stepsEdited[4]) {
+        response = await ApiManager.update('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.pricing}', body);
       } else {
-        response = await ApiManager.post(
-          '${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.pricing}',
-          body,
-        );
+        response = await ApiManager.post('${ApiEndpoint.customerCars}/${carBasicModel.id}/${ApiEndpoint.pricing}', body);
       }
       PrintLogs.printLog("fetchCarDetails response: $response");
       if (response['status'] == true && response['data'] is Map) {
@@ -899,4 +828,200 @@ class MyCarsProvider extends ChangeNotifier {
      HelperFunctions.handleApiMessages(response);
    }
   }
+
+  void onEditCar(BuildContext context, String id) async{
+    init(context);
+    updateLoader(true);
+    try{
+      var response = await ApiManager.get('${ApiEndpoint.customerCars}/$id');
+      if (response['status'] == true && response['data'] is Map) {
+        ///model parsing
+        carBasicModel = CarBasicModel.fromJson(response['data']);
+        stepsEdited = [true,true,true,true,true];
+        if(carBasicModel.make!=null){
+          int makeIndex = makeList.indexWhere((e)=> e.id == carBasicModel.make?.id);
+          if(makeIndex!=-1){
+            make = makeList[makeIndex];
+          }
+        }
+        model = SelectionObject(id: carBasicModel.model!.id, title: carBasicModel.model!.name, value: carBasicModel.model!.slug);
+        if(carBasicModel.model!=null){
+          int modelIndex = modelList.indexWhere((e)=> e.id == carBasicModel.model?.id);
+          if(modelIndex!=-1){
+            model = modelList[modelIndex];
+          }
+        }
+        year = SelectionObject(title: carBasicModel.year.toString(), value: carBasicModel.year.toString());
+        mileage = carBasicModel.mileage;
+        condition = SelectionObject(title: carBasicModel.conditionType.capitalize(), value: carBasicModel.conditionType);
+        regionSpec = SelectionObject(title: carBasicModel.regionalSpecs.capitalize(), value: carBasicModel.regionalSpecs);
+        bodyType = SelectionObject(title: carBasicModel.bodyType.capitalize(), value: carBasicModel.bodyType);
+        transmission = SelectionObject(title: carBasicModel.transmission.capitalize(), value: carBasicModel.transmission);
+        fuelType = SelectionObject(title: carBasicModel.fuelType.capitalize(), value: carBasicModel.fuelType);
+        color = SelectionObject(title: carBasicModel.color.capitalize(), value: carBasicModel.color);
+        cylinder = SelectionObject(title: carBasicModel.cylinders.capitalize(), value: carBasicModel.cylinders);
+        int index = cityList.indexWhere((e)=> e.id == carBasicModel.cityId);
+        if(index!=-1){
+          city = cityList[index];
+        }
+        variant = carBasicModel.variant;
+        driveType = SelectionObject(title: carBasicModel.driveType.capitalize(), value: carBasicModel.driveType);
+        noOfSeats = carBasicModel.noOfSeats;
+        engineSize = SelectionObject(title: carBasicModel.engineSize.capitalize(), value: carBasicModel.engineSize);
+        var optionalLevelIndex = optionalLevelList.indexWhere((e)=> e.value == carBasicModel.optionLevel);
+        if(optionalLevelIndex!=-1){
+          optionalLevel = optionalLevelList[optionalLevelIndex];
+        }
+        var overAllConditionIndex = overAllConditionList.indexWhere((e)=> e.value == carBasicModel.overallCondition);
+        print("overAllConditionIndex: $overAllConditionIndex - ${carBasicModel.overallCondition}");
+        if(overAllConditionIndex!=-1){
+          overAllCondition = overAllConditionList[overAllConditionIndex];
+        }
+        var accidentHistoryIndex = accidentHistoryList.indexWhere((e)=> e.value == carBasicModel.isAccidented);
+        if(accidentHistoryIndex!=-1){
+          accidentHistory = accidentHistoryList[accidentHistoryIndex];
+        }
+        var airBagsConditionIndex = airBagsConditionList.indexWhere((e)=> e.value == carBasicModel.airBagsCondition);
+        if(airBagsConditionIndex!=-1){
+          airBagsCondition = airBagsConditionList[airBagsConditionIndex];
+        }
+        var chassisConditionIndex = chassisConditionList.indexWhere((e)=> e.value == carBasicModel.chassisCondition);
+        if(chassisConditionIndex!=-1){
+          chassisCondition = chassisConditionList[chassisConditionIndex];
+        }
+        var engineConditionIndex = engineConditionList.indexWhere((e)=> e.value == carBasicModel.engineCondition);
+        if(engineConditionIndex!=-1){
+          engineCondition = engineConditionList[engineConditionIndex];
+        }
+        var gearBoxConditionIndex = gearBoxConditionList.indexWhere((e)=> e.value == carBasicModel.gearBoxCondition);
+        if(gearBoxConditionIndex!=-1){
+          gearBoxCondition = gearBoxConditionList[gearBoxConditionIndex];
+        }
+        hasAlloyRims = carBasicModel.alloyRims;
+        currentlyFinanced = carBasicModel.currentlyFinanced;
+        firstOwner = carBasicModel.firstOwner;
+        specialAboutCar = carBasicModel.specialAboutCar;
+
+        rimSize = carBasicModel.rimSize;
+        var roofTypeIndex = roofTypeList.indexWhere((e)=> e.value == carBasicModel.roofType);
+        if(roofTypeIndex!=-1){
+          roofType = roofTypeList[roofTypeIndex];
+        }
+        updateCarFeatures(carBasicModel.carFeatures);
+
+        ///documents
+        carImages.clear();
+        PrintLogs.printLog("documents: ${carBasicModel.documentsList.length}");
+        for (var e in carBasicModel.documentsList) {
+          CarImagesSelectionModel model =  CarImagesSelectionModel();
+          model.id = e.attachment?.id ?? '';
+          var imageTypeIndex =  carImageTypes.indexWhere((ele)=> ele.value == e.type);
+          if(imageTypeIndex!=-1){
+            model.imageType = carImageTypes[imageTypeIndex];
+          }
+          model.description.text = e.description;
+          model.imageUrl = e.attachment?.objectKey ?? '';
+          if(model.imageUrl.isNotEmpty){
+            model.imageUrl = ApiEndpoint.imageBaseUrl + model.imageUrl;
+          }
+          carImages.add(model);
+        }
+        priceController.text = carBasicModel.listingPrice;
+        isFeatureSelected =  carBasicModel.isFeatured;
+
+      } else {
+        HelperFunctions.handleApiMessages(response);
+      }
+    }catch(e){
+      PrintLogs.printLog("Exception: $e");
+    }finally{
+      updateLoader(false);
+    }
+  }
+
+  void updateCarFeatures(CarFeatures features) {
+    safetyFeature[0].isSelected = features.blindSpotMonitor;
+    safetyFeature[1].isSelected = features.laneKeepAssist;
+    safetyFeature[2].isSelected = features.preCollisionSystem;
+    safetyFeature[3].isSelected = features.brakeAssist;
+
+    exteriorFeatures[0].isSelected = features.ledHeadlights;
+    exteriorFeatures[1].isSelected = features.laneKeepAssist;
+
+    entertainmentConnectivity[0].isSelected = features.bluetooth;
+    entertainmentConnectivity[1].isSelected = features.carplay;
+    entertainmentConnectivity[2].isSelected = features.rearEntertainment;
+    entertainmentConnectivity[3].isSelected = features.premiumSound;
+    entertainmentConnectivity[4].isSelected = features.headsUpDisplay;
+    entertainmentConnectivity[5].isSelected = features.navigationSystem;
+    entertainmentConnectivity[6].isSelected = features.digitalDisplay;
+
+    driverAssistance[0].isSelected = features.parkingSensors;
+    driverAssistance[1].isSelected = features.cruiseControl;
+    driverAssistance[2].isSelected = features.reversingCamera;
+    driverAssistance[3].isSelected = features.birdsEyeCamera;
+    driverAssistance[4].isSelected = features.digitalDisplay;
+    driverAssistance[5].isSelected = features.automatedParking;
+    driverAssistance[6].isSelected = features.adaptiveCruiseControl;
+
+    interiorComfort[0].isSelected = features.steeringControls;
+    interiorComfort[1].isSelected = features.paddleShifters;
+    interiorComfort[2].isSelected = features.autoDimmingMirror;
+    interiorComfort[3].isSelected = features.leatherSeats;
+    interiorComfort[4].isSelected = features.pushButtonStart;
+    interiorComfort[5].isSelected = features.remoteStart;
+    interiorComfort[6].isSelected = features.ambientLighting;
+    interiorComfort[7].isSelected = features.keylessEntry;
+    interiorComfort[8].isSelected = features.powerSeats;
+    interiorComfort[9].isSelected = features.memorySeats;
+    interiorComfort[10].isSelected = features.powerFoldingMirrors;
+    interiorComfort[11].isSelected = features.softCloseDoor;
+    interiorComfort[12].isSelected = features.electricRunningBoard;
+    interiorComfort[13].isSelected = features.handsFreeLifgate;
+    interiorComfort[14].isSelected = features.massageSeats;
+    interiorComfort[15].isSelected = features.heatedCooledSeats;
+    interiorComfort[16].isSelected = features.lumbarSupport;
+
+    maintenanceModifications[0].isSelected = features.newBrakePads;
+    maintenanceModifications[1].isSelected = features.agencyMaintained;
+    maintenanceModifications[2].isSelected = features.specialModifications;
+    maintenanceModifications[3].isSelected = features.newBattery;
+    maintenanceModifications[4].isSelected = features.newTyres;
+    maintenanceModifications[5].isSelected = features.premiumAccessories;
+
+    selectedFeatureItems.clear();
+    for (var e in safetyFeature) {
+      if(e.isSelected){
+        selectedFeatureItems.add(e);
+      }
+    }
+    for (var e in exteriorFeatures) {
+      if(e.isSelected){
+        selectedFeatureItems.add(e);
+      }
+    }
+    for (var e in entertainmentConnectivity) {
+      if(e.isSelected){
+        selectedFeatureItems.add(e);
+      }
+    }
+    for (var e in driverAssistance) {
+      if(e.isSelected){
+        selectedFeatureItems.add(e);
+      }
+    }
+    for (var e in interiorComfort) {
+      if(e.isSelected){
+        selectedFeatureItems.add(e);
+      }
+    }
+    for (var e in maintenanceModifications) {
+      if(e.isSelected){
+        selectedFeatureItems.add(e);
+      }
+    }
+
+  }
+
+
 }

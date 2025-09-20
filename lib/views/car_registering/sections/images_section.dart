@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash_app/widgets/custom_drop_down.dart';
 import 'package:car_wash_app/widgets/custom_text_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/my_cars_provider.dart';
@@ -97,55 +99,112 @@ class ImagesSection extends StatelessWidget {
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           border: Border.all(color: AppColors.greyColor),
-                          borderRadius: BorderRadius.circular(12)
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: provider.carImages[index].localPath.isNotEmpty
-                                    ? Image.file(
-                                  File(provider.carImages[index].localPath),
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                )
-                                    : Container(
-                                  width: 100,
-                                  height: 100,
-                                  color: Colors.grey[300],
-                                  child: const Icon(Icons.image_not_supported, color: Colors.grey),
-                                ),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child:
+                                  provider.carImages[index].imageUrl.isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          provider.carImages[index].imageUrl,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        width: 100,
+                                        height: 100,
+                                        color: Colors.grey[200],
+                                        child: const Center(
+                                          child: CupertinoActivityIndicator(),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                            width: 100,
+                                            height: 100,
+                                            color: Colors.grey[300],
+                                            child: const Icon(
+                                              Icons.broken_image,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                    )
+                                  : provider
+                                        .carImages[index]
+                                        .localPath
+                                        .isNotEmpty
+                                  ? Image.file(
+                                      File(provider.carImages[index].localPath),
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                                width: 100,
+                                                height: 100,
+                                                color: Colors.grey[300],
+                                                child: const Icon(
+                                                  Icons.broken_image,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                    )
+                                  : Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.grey[300],
+                                      child: const Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text: 'Image Type',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  SizedBox(height: 5),
+                                  CustomDropDown(
+                                    list: provider.carImageTypes,
+                                    title: '',
+                                    value: provider.carImages[index].imageType,
+                                    onSelection: (val) {
+                                      provider.updateImageType(index, val);
+                                    },
+                                  ),
+                                  SizedBox(height: 5),
+                                  CustomText(
+                                    text: 'Description',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  SizedBox(height: 5),
+                                  RoundedTextField(
+                                    controller:
+                                        provider.carImages[index].description,
+                                    maxLength: 200,
+                                  ),
+                                ],
                               ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                              CustomText(text: 'Image Type',fontWeight: FontWeight.w500),
-                              SizedBox(height: 5),
-                              CustomDropDown(list: provider.carImageTypes, title: '', value: provider.carImages[index].imageType, onSelection: (val){
-                                provider.updateImageType(index,val);
-                              }),
-                              SizedBox(height: 5),
-                              CustomText(text: 'Description',fontWeight: FontWeight.w500),
-                              SizedBox(height: 5),
-                              RoundedTextField(
-                                controller: provider.carImages[index].description,
-                                maxLength: 200,
-                              ),
-                            ],),
-                          )
-
-                        ]),
+                            ),
+                          ],
+                        ),
                       ),
                       Positioned(
                         top: -5,
                         right: -5,
                         child: GestureDetector(
-                          onTap: ()=> provider.removeImageFromList(index),
+                          onTap: () => provider.removeImageFromList(index),
                           child: Container(
                             decoration: BoxDecoration(
                               color: AppColors.redAccentColor,
@@ -160,7 +219,6 @@ class ImagesSection extends StatelessWidget {
                           ),
                         ),
                       ),
-
                     ],
                   );
                 },

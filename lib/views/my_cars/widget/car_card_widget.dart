@@ -1,15 +1,22 @@
-import 'package:car_wash_app/utils/app_assets.dart';
 import 'package:flutter/material.dart';
-import 'package:car_wash_app/models/car_listing_model.dart';
-import 'package:car_wash_app/utils/app_colors.dart';
-import 'package:car_wash_app/widgets/custom_text.dart';
-import 'package:car_wash_app/widgets/riyal_price_widget.dart';
+import '../../../models/car_listing_model.dart';
+import '../../../utils/app_colors.dart';
+import '../../../widgets/custom_text.dart';
+import '../../../widgets/riyal_price_widget.dart';
 
 class CarCardWidget extends StatelessWidget {
   final CarListingModel model;
   final VoidCallback? onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
-  const CarCardWidget({super.key, required this.model, this.onTap});
+  const CarCardWidget({
+    super.key,
+    required this.model,
+    this.onTap,
+    this.onEdit,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,38 +46,38 @@ class CarCardWidget extends StatelessWidget {
                 Container(
                   height: 160,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
                       top: Radius.circular(16),
                     ),
                   ),
                   child: model.imageUrl.isNotEmpty
                       ? ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                          child: Image.network(
-                            model.imageUrl,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                        )
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                    child: Image.network(
+                      model.imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  )
                       : Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.image,
-                              size: 48,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.image,
+                        size: 48,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
                 ),
                 Positioned(
                   top: 10,
@@ -94,7 +101,7 @@ class CarCardWidget extends StatelessWidget {
                       Expanded(
                         child: CustomText(
                           text:
-                              "${model.makeName} ${model.modelName} ${model.year}",
+                          "${model.makeName} ${model.modelName} ${model.year}",
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           maxLine: 1,
@@ -118,12 +125,56 @@ class CarCardWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _specItem(Icons.settings, model.transmission),
-                      _specItem(
-                        Icons.local_gas_station,
-                        "${model.engineSize}L",
-                      ),
+                      _specItem(Icons.local_gas_station, "${model.engineSize}L"),
                       _specItem(Icons.event_seat, "${model.noOfSeats} Seats"),
                       _specItem(Icons.speed, "${model.mileage} km"),
+                    ],
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Action Buttons (Edit & Delete)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: onEdit,
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            side: BorderSide(color: Colors.green.shade600),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          icon: Icon(Icons.edit, color: Colors.green.shade600),
+                          label: CustomText(
+                            text: "Edit",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green.shade600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: onDelete,
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            side: BorderSide(color: Colors.red.shade600),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          icon: Icon(Icons.delete, color: Colors.red.shade600),
+                          label: CustomText(
+                            text: "Delete",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red.shade600,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ],
