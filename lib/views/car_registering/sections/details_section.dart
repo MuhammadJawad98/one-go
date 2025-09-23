@@ -14,9 +14,7 @@ class DetailsStep extends StatefulWidget {
 }
 
 class _DetailsStepState extends State<DetailsStep> {
-  var descriptionTF = TextEditingController();
-  var accidentDetailTF = TextEditingController();
-  var rimeSizeTF = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MyCarsProvider>(
@@ -49,9 +47,9 @@ class _DetailsStepState extends State<DetailsStep> {
         RoundedTextField(
           hintText: 'Please provide details about the accident and repair done...',
           maxLines: 5,
-          controller: accidentDetailTF,
+          controller: provider.accidentDetailTF,
           onChange: (val){
-            provider.accidentDetails = accidentDetailTF.text.trim();
+            // provider.accidentDetails = provider.accidentDetailTF.text.trim();
           }
         ),
         SizedBox(height: 5),
@@ -99,10 +97,10 @@ class _DetailsStepState extends State<DetailsStep> {
           if(provider.hasAlloyRims)...[
                 RoundedTextField(
                   hintText: 'e.g, 18',
-                  controller: rimeSizeTF,
+                  controller: provider.rimeSizeTF,
                   keyboardType: TextInputType.number,
                   onEditDone: (){
-                    provider.rimSize = rimeSizeTF.text.trim();
+                    // provider.rimSize = rimeSizeTF.text.trim();
                   },
                 ),
           ],
@@ -141,9 +139,9 @@ class _DetailsStepState extends State<DetailsStep> {
               RoundedTextField(
                 hintText: 'Describe any special features, modification, recent maintenance, or unique aspects',
                 maxLines: 5,
-                controller: descriptionTF,
+                controller: provider.specialAboutCarTF,
                 onChange: (val){
-                  provider.specialAboutCar = descriptionTF.text.trim();
+                  // provider.specialAboutCar = descriptionTF.text.trim();
                 },
               ),
               SizedBox(height: 5),

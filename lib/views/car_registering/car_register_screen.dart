@@ -61,12 +61,7 @@ class _CreateCarScreenState extends State<CreateCarScreen> {
   ];
 
   void _nextStep() async{
-    // var provider = Provider.of<MyCarsProvider>(context,listen: false);
     if (_currentStep < _steps.length - 1) {
-      // if(_currentStep == 1){
-      //   provider.initFeatureList();
-      // }
-
       if(_currentStep == 0){
         var result = await Provider.of<MyCarsProvider>(context,listen: false).postCarBasic();
         if(result == null || result == false) return;
@@ -121,7 +116,7 @@ class _CreateCarScreenState extends State<CreateCarScreen> {
   return CustomOverLay(
       isLoading: provider.isLoading,
       child: Scaffold(
-        appBar: AppBar(title: CustomText(text: "Add New Car"), centerTitle: true),
+        appBar: AppBar(title: CustomText(text: widget.id!=null ? "Update Car Details" : "Add New Car"), centerTitle: true),
         body: Column(
           children: [
             // Step indicators
@@ -206,7 +201,12 @@ class _CreateCarScreenState extends State<CreateCarScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
+                onPageChanged: (index){
+                  setState(() {
+                    _currentStep = index;
+                  });
+                },
+                physics: (widget.id!=null && widget.id!.isNotEmpty) ? const BouncingScrollPhysics() : NeverScrollableScrollPhysics(),
                 children: const [
                   BasicInfoStep(),
                   DetailsStep(),

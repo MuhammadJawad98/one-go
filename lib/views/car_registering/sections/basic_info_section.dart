@@ -45,8 +45,8 @@ class BasicInfoStep extends StatelessWidget {
                 SizedBox(height: 10),
                 RoundedTextField(
                   hintText: 'Select Mileage',
+                  controller: provider.mileageTF,
                   onChange: (val){
-                    provider.mileage = val;
                   },
                 )
               ],
@@ -96,9 +96,7 @@ class BasicInfoStep extends StatelessWidget {
                 SizedBox(height: 10),
                 RoundedTextField(
                   hintText: 'e.g Sports, LX, EX',
-                  onChange: (val){
-                    provider.variant = val;
-                  },
+                  controller: provider.variantTF,
                 )
               ],
             )),
@@ -116,9 +114,7 @@ class BasicInfoStep extends StatelessWidget {
                 SizedBox(height: 10),
                 RoundedTextField(
                   hintText: 'Enter number of seats',
-                  onChange: (val){
-                    provider.noOfSeats = val;
-                  },
+                  controller: provider.noOfSeatsTF,
                 )
               ],
             )),

@@ -11,8 +11,8 @@ class AppAlerts {
     required BuildContext context,
     String title = AppStrings.appName,
     required String text,
-    String? noBtnText,
-    String? yesBtnText,
+    String? noBtnText = 'No',
+    String? yesBtnText = 'Yes',
     required VoidCallback onTapConfirm,
     VoidCallback? onTapNo,
   }) {

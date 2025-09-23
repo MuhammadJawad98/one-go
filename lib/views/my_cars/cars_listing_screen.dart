@@ -91,6 +91,9 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                                 onEdit: (){
                                   AppNavigation.navigateToCreateMyCar(context,id:c.id);
                                 },
+                                onDelete: (){
+                                  p.onDeleteCar(context,c);
+                                },
                                 onTap: (){
                               // AppNavigation.navigateToCarDetails(context, c.id);
                             });

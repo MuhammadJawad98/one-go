@@ -1,3 +1,4 @@
+import 'package:car_wash_app/utils/app_alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:car_wash_app/models/car_listing_model.dart';
 import 'package:car_wash_app/utils/helper_functions.dart';
@@ -86,8 +87,14 @@ class CarListingProvider extends ChangeNotifier {
   }
 
   Future<void> deleteCar(BuildContext context, String id) async {
-    // TODO: call delete endpoint if available
-    PrintLogs.printLog('Delete car $id');
+    _cars.removeWhere((e)=> e.id == id);
+    notifyListeners();
+    ApiManager.delete('${ApiEndpoint.customerCars}/$id').then((val){
+      PrintLogs.printLog('$val');
+      if(val['status'] == true && val['statusCode'].toString() == '200'){
+        AppAlerts.showSnackBar(val['message']);
+      }
+    });
   }
 
   // internals
@@ -136,18 +143,21 @@ class CarListingProvider extends ChangeNotifier {
       list = const [];
     }
 
-    final items = list
-        .map((e) => CarListingModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final items = list.map((e) => CarListingModel.fromJson(e as Map<String, dynamic>)).toList();
 
     if (replace) {
-      _cars
-        ..clear()
-        ..addAll(items);
+      _cars..clear()..addAll(items);
     } else {
       _cars.addAll(items);
     }
-
     _hasMore = items.length >= _limit;
+  }
+
+  void onDeleteCar(BuildContext context, CarListingModel c) {
+    AppAlerts.showCustomPopupAlert(context: context, text: 'Are you sure you want to delete this car?',
+        yesBtnText: 'Yes', noBtnText: 'No',
+        onTapConfirm: (){
+      deleteCar(context, c.id);
+    });
   }
 }

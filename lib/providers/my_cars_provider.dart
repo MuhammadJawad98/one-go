@@ -1,15 +1,13 @@
 import 'dart:io';
-
-import 'package:car_wash_app/models/car_basic_model.dart';
-import 'package:car_wash_app/models/selection_object.dart';
-import 'package:car_wash_app/providers/dashboard_provider.dart';
-import 'package:car_wash_app/utils/app_alerts.dart';
-import 'package:car_wash_app/utils/extensions.dart';
-import 'package:car_wash_app/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
+import '../models/car_basic_model.dart';
+import '../models/selection_object.dart';
+import '../providers/dashboard_provider.dart';
+import '../utils/app_alerts.dart';
+import '../utils/extensions.dart';
+import '../utils/helper_functions.dart';
 import '../models/car_image_selection_model.dart';
 import '../services/api_manager.dart';
 import '../utils/api_endpoint.dart';
@@ -17,6 +15,15 @@ import '../utils/print_log.dart';
 import 'car_listing_provider.dart';
 
 class MyCarsProvider extends ChangeNotifier {
+
+  var specialAboutCarTF = TextEditingController();
+  var accidentDetailTF = TextEditingController();
+  var rimeSizeTF = TextEditingController();
+  var priceController = TextEditingController();
+  var mileageTF = TextEditingController();
+  var variantTF = TextEditingController();
+  var noOfSeatsTF = TextEditingController();
+
   bool isLoading = false;
   bool hasAlloyRims = false;
   bool currentlyFinanced = false;
@@ -113,7 +120,6 @@ class MyCarsProvider extends ChangeNotifier {
   SelectionObject? make;
   SelectionObject? model;
   SelectionObject? year;
-  String? mileage;
   SelectionObject? condition;
   SelectionObject? regionSpec;
   SelectionObject? bodyType;
@@ -122,8 +128,6 @@ class MyCarsProvider extends ChangeNotifier {
   SelectionObject? color;
   SelectionObject? cylinder;
   SelectionObject? city;
-  String? variant;
-  String? noOfSeats;
   SelectionObject? driveType;
   SelectionObject? engineSize;
   SelectionObject? optionalLevel;
@@ -137,9 +141,6 @@ class MyCarsProvider extends ChangeNotifier {
   SelectionObject? engineCondition;
   SelectionObject? gearBoxCondition;
   SelectionObject? roofType;
-  String specialAboutCar = '';
-  String accidentDetails = '';
-  String rimSize = '';
 
   ///step 4
   List<CarImagesSelectionModel> carImages = [];
@@ -160,9 +161,19 @@ class MyCarsProvider extends ChangeNotifier {
   ];
 
   ///step5
-  TextEditingController priceController = TextEditingController();
   bool isFeatureSelected = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+    specialAboutCarTF.dispose();
+    accidentDetailTF.dispose();
+    rimeSizeTF.dispose();
+    priceController.dispose();
+    mileageTF.dispose();
+    noOfSeatsTF.dispose();
+    variantTF.dispose();
+  }
   void resetAll() {
     isLoading = false;
     makeList = [];
@@ -466,14 +477,14 @@ class MyCarsProvider extends ChangeNotifier {
       if (year == null) {
         AppAlerts.showSnackBar('Enter valid year', statusCode: 1);
         return null;
-      } else if (mileage == null && mileage!.isEmpty) {
-        AppAlerts.showSnackBar('Enter valid mileage', statusCode: 1);
-        return null;
       } else if (condition == null) {
         AppAlerts.showSnackBar('Enter valid condittion', statusCode: 1);
         return null;
       } else if (regionSpec == null) {
         AppAlerts.showSnackBar('Enter valid region specs', statusCode: 1);
+        return null;
+      }else if (mileageTF.text.isEmpty) {
+        AppAlerts.showSnackBar('Enter valid mileage', statusCode: 1);
         return null;
       }
       // else if(engineSize == null){
@@ -495,7 +506,7 @@ class MyCarsProvider extends ChangeNotifier {
       //   AppAlerts.showSnackBar('Enter valid drive type',statusCode: 1);
       //   return null;
       // }
-      else if (noOfSeats == null && noOfSeats!.isEmpty) {
+      else if (noOfSeatsTF.text.isEmpty) {
         AppAlerts.showSnackBar('Enter valid no of seats', statusCode: 1);
         return null;
       } else if (fuelType == null) {
@@ -521,16 +532,15 @@ class MyCarsProvider extends ChangeNotifier {
       //   AppAlerts.showSnackBar('Enter valid variant',statusCode: 1);
       //   return null;
       // }
-      else if (noOfSeats != null &&
-          noOfSeats!.isNotEmpty &&
-          int.parse(noOfSeats!) > 20 &&
-          int.parse(noOfSeats!) <= 0) {
+      else if (noOfSeatsTF.text.isNotEmpty &&
+          int.parse(noOfSeatsTF.text) > 20 &&
+          int.parse(noOfSeatsTF.text) <= 0) {
         AppAlerts.showSnackBar('Enter valid seats', statusCode: 1);
         return null;
       }
       var body = {
         "year": int.parse(year!.value),
-        "mileage": int.parse(mileage!),
+        "mileage": int.parse(mileageTF.text.trim()),
         "conditionType": condition?.value ?? '',
         "regionalSpecs": regionSpec?.value ?? '',
         "engineSize": engineSize?.value ?? '',
@@ -538,10 +548,9 @@ class MyCarsProvider extends ChangeNotifier {
         "bodyType": bodyType?.value ?? '',
         "transmission": transmission?.value ?? '',
         "driveType": driveType?.value ?? '',
-        if (noOfSeats != null && noOfSeats != "")
-          "noOfSeats": int.tryParse(noOfSeats!) ?? 2,
+        "noOfSeats": int.tryParse(noOfSeatsTF.text) ?? 2,
         "fuelType": fuelType?.value ?? '',
-        if (variant != null) "variant": variant,
+        if (variantTF.text.isNotEmpty) "variant": variantTF.text,
         "color": color?.value ?? '',
         "cityId": int.parse(city!.id),
         "cylinders": cylinder?.value ?? '',
@@ -563,7 +572,7 @@ class MyCarsProvider extends ChangeNotifier {
         // carBasicModel = CarBasicModel();
         HelperFunctions.handleApiMessages(response);
       }
-      return true;
+      return false;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       return false;
@@ -592,8 +601,8 @@ class MyCarsProvider extends ChangeNotifier {
     updateLoader(true);
     int? rimSizeTemp;
 
-    if (rimSize.isNotEmpty) {
-      rimSizeTemp = int.tryParse(rimSize);
+    if (rimeSizeTF.text.isNotEmpty) {
+      rimSizeTemp = int.tryParse(rimeSizeTF.text);
       if (rimSizeTemp == null) {
         AppAlerts.showSnackBar('Enter valid seats', statusCode: 1);
         return null;
@@ -606,7 +615,7 @@ class MyCarsProvider extends ChangeNotifier {
       Map<String, dynamic> body = {
         "overallCondition": overAllCondition?.value ?? '',
         "isAccidented": accidentHistory?.value ?? '',
-        "accidentDetail": accidentDetails,
+        "accidentDetail": accidentDetailTF.text.trim(),
         "airBagsCondition": airBagsCondition?.value ?? '',
         "chassisCondition": chassisCondition?.value ?? '',
         "engineCondition": engineCondition?.value ?? '',
@@ -616,7 +625,7 @@ class MyCarsProvider extends ChangeNotifier {
         "roofType": roofType?.value ?? '',
         "currentlyFinanced": currentlyFinanced,
         "firstOwner": firstOwner,
-        "specialAboutCar": specialAboutCar,
+        "specialAboutCar": specialAboutCarTF.text.trim(),
       };
       dynamic response;
       if (stepsEdited[1]) {
@@ -631,7 +640,7 @@ class MyCarsProvider extends ChangeNotifier {
       } else {
         HelperFunctions.handleApiMessages(response);
       }
-      return true;
+      return false;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       AppAlerts.showSnackBar(e.toString(), statusCode: 1);
@@ -677,7 +686,7 @@ class MyCarsProvider extends ChangeNotifier {
       } else {
         HelperFunctions.handleApiMessages(response);
       }
-      return true;
+      return false;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       AppAlerts.showSnackBar(e.toString(), statusCode: 1);
@@ -715,16 +724,55 @@ class MyCarsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<CarImagesSelectionModel>> uploadCarImages(
-    BuildContext context,
-    List<CarImagesSelectionModel> images,
-  ) async {
-    List<CarImagesSelectionModel> uploadedImages = [];
+  // Future<List<CarImagesSelectionModel>> uploadCarImages(
+  //   BuildContext context,
+  //   List<CarImagesSelectionModel> images,
+  // ) async {
+  //   List<CarImagesSelectionModel> uploadedImages = [];
+  //
+  //   for (var img in images) {
+  //     try {
+  //       if (img.localPath.isEmpty) {
+  //         continue; // skip if no file
+  //       }
+  //
+  //       final file = File(img.localPath);
+  //       final response = await ApiManager.uploadFile(
+  //         ApiEndpoint.attachmentsUpload,
+  //         file,
+  //         fieldName: "file",
+  //       );
+  //
+  //       PrintLogs.printLog("uploadAttachment response: $response");
+  //
+  //       if (response['status'] == true &&
+  //           response['data'] != null &&
+  //           response['data']['attachment'] is Map) {
+  //         final attachmentData = response['data']['attachment'];
+  //
+  //         // Update the model with new id
+  //         img.id = attachmentData['id']?.toString() ?? '';
+  //       } else {
+  //         HelperFunctions.handleApiMessages(response);
+  //       }
+  //     } catch (e) {
+  //       AppAlerts.showSnackBar('Upload failed: ${e.toString()}', statusCode: 1);
+  //     }
+  //
+  //     uploadedImages.add(img);
+  //   }
+  //
+  //   return uploadedImages;
+  // }
 
-    for (var img in images) {
+  Future<List<CarImagesSelectionModel>> uploadCarImages(
+      BuildContext context,
+      List<CarImagesSelectionModel> images,
+      ) async {
+    final futures = images.map((img) async {
       try {
         if (img.localPath.isEmpty) {
-          continue; // skip if no file
+          return img; // return as-is if no file
         }
 
         final file = File(img.localPath);
@@ -740,8 +788,6 @@ class MyCarsProvider extends ChangeNotifier {
             response['data'] != null &&
             response['data']['attachment'] is Map) {
           final attachmentData = response['data']['attachment'];
-
-          // Update the model with new id
           img.id = attachmentData['id']?.toString() ?? '';
         } else {
           HelperFunctions.handleApiMessages(response);
@@ -749,12 +795,14 @@ class MyCarsProvider extends ChangeNotifier {
       } catch (e) {
         AppAlerts.showSnackBar('Upload failed: ${e.toString()}', statusCode: 1);
       }
+      return img;
+    }).toList();
 
-      uploadedImages.add(img);
-    }
-
+    // Run uploads in parallel
+    final uploadedImages = await Future.wait(futures);
     return uploadedImages;
   }
+
 
   Future<bool?> postCarDocuments(
     BuildContext context, {
@@ -781,7 +829,7 @@ class MyCarsProvider extends ChangeNotifier {
       }else{
         HelperFunctions.handleApiMessages(response);
       }
-      return true;
+      return false;
     } catch (e) {
       PrintLogs.printLog('Exception fetchCarDetails : $e');
       AppAlerts.showSnackBar(e.toString(),statusCode: 1);
@@ -852,7 +900,7 @@ class MyCarsProvider extends ChangeNotifier {
           }
         }
         year = SelectionObject(title: carBasicModel.year.toString(), value: carBasicModel.year.toString());
-        mileage = carBasicModel.mileage;
+        mileageTF.text = carBasicModel.mileage;
         condition = SelectionObject(title: carBasicModel.conditionType.capitalize(), value: carBasicModel.conditionType);
         regionSpec = SelectionObject(title: carBasicModel.regionalSpecs.capitalize(), value: carBasicModel.regionalSpecs);
         bodyType = SelectionObject(title: carBasicModel.bodyType.capitalize(), value: carBasicModel.bodyType);
@@ -864,16 +912,16 @@ class MyCarsProvider extends ChangeNotifier {
         if(index!=-1){
           city = cityList[index];
         }
-        variant = carBasicModel.variant;
+        variantTF.text = carBasicModel.variant;
+        noOfSeatsTF.text = carBasicModel.noOfSeats;
         driveType = SelectionObject(title: carBasicModel.driveType.capitalize(), value: carBasicModel.driveType);
-        noOfSeats = carBasicModel.noOfSeats;
         engineSize = SelectionObject(title: carBasicModel.engineSize.capitalize(), value: carBasicModel.engineSize);
         var optionalLevelIndex = optionalLevelList.indexWhere((e)=> e.value == carBasicModel.optionLevel);
         if(optionalLevelIndex!=-1){
           optionalLevel = optionalLevelList[optionalLevelIndex];
         }
         var overAllConditionIndex = overAllConditionList.indexWhere((e)=> e.value == carBasicModel.overallCondition);
-        print("overAllConditionIndex: $overAllConditionIndex - ${carBasicModel.overallCondition}");
+        PrintLogs.printLog("overAllConditionIndex: $overAllConditionIndex - ${carBasicModel.overallCondition}");
         if(overAllConditionIndex!=-1){
           overAllCondition = overAllConditionList[overAllConditionIndex];
         }
@@ -900,9 +948,10 @@ class MyCarsProvider extends ChangeNotifier {
         hasAlloyRims = carBasicModel.alloyRims;
         currentlyFinanced = carBasicModel.currentlyFinanced;
         firstOwner = carBasicModel.firstOwner;
-        specialAboutCar = carBasicModel.specialAboutCar;
+        specialAboutCarTF.text = carBasicModel.specialAboutCar;
+        accidentDetailTF.text = carBasicModel.accidentDetail;
 
-        rimSize = carBasicModel.rimSize;
+        rimeSizeTF.text = carBasicModel.rimSize;
         var roofTypeIndex = roofTypeList.indexWhere((e)=> e.value == carBasicModel.roofType);
         if(roofTypeIndex!=-1){
           roofType = roofTypeList[roofTypeIndex];
@@ -1020,7 +1069,6 @@ class MyCarsProvider extends ChangeNotifier {
         selectedFeatureItems.add(e);
       }
     }
-
   }
 
 

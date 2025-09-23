@@ -103,20 +103,23 @@ class ApiManager {
   }
 
   static Future<dynamic> update(String path, Map<String, dynamic> data,
-      {bool byPassBaseUrl = false}) async {
+      {bool byPassBaseUrl = false,Map<String,String> headers =const {}}) async {
     try {
       var url = '${ApiEndpoint.baseUrl}$path';
       if (byPassBaseUrl) {
         url = path;
       }
       // Log curl command
-      _logCurlCommand('PUT', url, {}, body: data);
+      var tempHeaders = {
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer ${DataManager().authToken}",
+        ...headers
+      };
+      _logCurlCommand('PUT', url, tempHeaders, body: data);
 
       final response = await http.put(
         Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
+        headers: tempHeaders,
         body: jsonEncode(data),
       );
 
@@ -149,28 +152,55 @@ class ApiManager {
     }
   }
 
-  static Future<void> delete(String path, {bool byPassBaseUrl = false}) async {
+  static Future<dynamic> delete(
+      String path, {
+        bool byPassBaseUrl = false,
+        Map<String, String> headers = const {},
+      }) async {
     try {
-      var url = '${ApiEndpoint.baseUrl}$path';
-      if (byPassBaseUrl) {
-        url = path;
-      }
+      var url = byPassBaseUrl ? path : '${ApiEndpoint.baseUrl}$path';
 
       // Log curl command
-      _logCurlCommand('DELETE', url, {});
+      var tempHeaders = {
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer ${DataManager().authToken}",
+        ...headers
+      };
+      _logCurlCommand('DELETE', url, tempHeaders);
 
-      final response = await http.delete(Uri.parse(url));
+      final response = await http.delete(Uri.parse(url), headers: tempHeaders);
 
-      if (response.statusCode != 204) {
-        throw ApiException(response.statusCode, 'Failed to delete resource');
+      PrintLogs.printLog("DELETE Response (${response.statusCode}): ${response.body}");
+
+      if (response.body.isNotEmpty) {
+        return jsonDecode(response.body);
       }
+
+      return {
+        "status": response.statusCode == 200 || response.statusCode == 204,
+        "message": response.statusCode == 204
+            ? "Deleted successfully"
+            : "Request completed",
+      };
     } catch (e) {
       if (e is SocketException) {
         PrintLogs.printLog("No internet connection");
+        return {
+          "status": false,
+          "message": "You’re offline. Check your internet connection and try again.",
+        };
       } else if (e is TimeoutException) {
         PrintLogs.printLog("Request timed out");
+        return {
+          "status": false,
+          "message": "Request timed out. Please try again.",
+        };
       } else {
-        PrintLogs.printLog("An unknown error occurred");
+        PrintLogs.printLog("An unknown error occurred: $e");
+        return {
+          "status": false,
+          "message": "Something went wrong. Please try again.",
+        };
       }
     }
   }
